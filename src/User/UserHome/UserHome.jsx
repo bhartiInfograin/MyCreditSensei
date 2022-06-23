@@ -13,7 +13,10 @@ import {CREDIT_SCORE} from '../../Url'
 
 export default function UserHome() {
   //  =====plan purchase popup start=======
-  const [show, setShow] = useState(true);
+  // const [show, setShow] = useState(true);
+  // const handleClose = ()=>{
+  //   setShow(false)
+  // }
 //  =====plan purchase popup end=======
   const summary = JSON.parse(sessionStorage.getItem("SUMMARY"));
   const equ = JSON.parse(sessionStorage.getItem("EQUIFAX"));
@@ -21,9 +24,6 @@ export default function UserHome() {
   const expri = JSON.parse(sessionStorage.getItem("EXPERIAN"));
   const trackingToken = (sessionStorage.getItem("TRACKINGTOKEN"));
 
-console.log("equ",equ)
-console.log("trans",trans)
-console.log("expri",expri)
 
    useEffect(() => {
          const article = {
@@ -42,10 +42,7 @@ console.log("expri",expri)
          })
 
 
-  },[])
-
-
-
+  })
 
 
 
@@ -195,7 +192,7 @@ console.log("expri",expri)
       <Footer />
 
         {/* =====plan purchase popup start======= */}
-        <Modal show={show}   backdrop="static" keyboard={false} className="purchase_plan">
+        {/* <Modal show={show}   backdrop="static" keyboard={false} className="purchase_plan">
         
         <Modal.Body>
           <Container>
@@ -221,7 +218,7 @@ console.log("expri",expri)
               </ul>
               <p className='text-center cardtext'>Includes SmartCredit Money Manager with 2 monthly Transunion Report &  Score updates in SmartCredit.</p>
               <div className="purchase_btn">
-              <button>PURCHASE</button>
+              <button onClick={handleClose}>PURCHASE</button>
             </div>
             </div>
             
@@ -231,7 +228,7 @@ console.log("expri",expri)
           </Container>
         </Modal.Body>
       
-      </Modal>
+      </Modal> */}
         {/* =====plan purchase popup end======= */}
     </>
   )

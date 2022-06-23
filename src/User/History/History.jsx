@@ -1,7 +1,8 @@
 import React from 'react';
 import { Container, Row, Col, Image, Button, Table, Tabs, Tab } from 'react-bootstrap';
 import UserHeader from '../Common/UserHeader';
-import Graph from '../UserHome/Graph';
+import GaugeChart from 'react-gauge-chart'
+
 import Footer from '../../Common/Footer'
 import {
     Chart as ChartJS,
@@ -37,9 +38,13 @@ export default function History() {
     const [tramsunionScore, setTransunionScore] = useState()
     const [experianScore, setExperianScore] = useState()
     const [equifaxScore, setEquifaxScore] = useState()
-    
+    const equ = JSON.parse(sessionStorage.getItem("EQUIFAX"));
+    const trans = JSON.parse(sessionStorage.getItem("TRANSUNION"));
+    const expri = JSON.parse(sessionStorage.getItem("EXPERIAN"));
+    var todayDate = new Date()
+    var fulldate = todayDate.getDate() + "/" + (todayDate.getMonth() + 1) + "/" + todayDate.getFullYear()
 
-    
+
 
     var tranScore = []
     var tranDate = []
@@ -55,8 +60,8 @@ export default function History() {
             .then((res) => {
                 console.log(res.data)
 
-                
-                
+
+
                 // console.log("data1",data1)
 
                 if (res.data.statusCode === 200) {
@@ -137,7 +142,7 @@ export default function History() {
             },
         ],
     };
-  
+
 
 
 
@@ -145,7 +150,88 @@ export default function History() {
     return (
         <>
             <UserHeader />
-            <Graph />
+
+            <section className='graph_section'>
+                <Container>
+                    <Row>
+                        <Col lg={4} md={6} className="d-flex justify-content-center mb-4">
+
+                            <div className='graph_trans'>
+                                <h6 className=''>TRANSUNION</h6>
+                                <p className='value'>{trans}</p>
+                                <GaugeChart id="gauge-chart5"
+                                    nrOfLevels={800}
+                                    arcsLength={[0.5, 0.5, 0.5]}
+                                    colors={['#133A1B', '#92B396', '#F1DB77 ']}
+                                    percent={trans / 900}
+                                    arcPadding={0.02}
+                                    className="gauge_chart"
+                                    style={{ width: "280px" }}
+                                />
+                                <div className='score'>
+                                    <h6 className='outoffscore'>300</h6>
+                                    <h6 className='totalscore'>900</h6>
+                                </div>
+                                <div className='graphAsOfDate'>as of {fulldate}</div>
+                                </div>
+                        </Col>
+
+
+                        <Col lg={4} md={6} className="d-flex justify-content-center mb-4">
+                            <div className='graph_equi '>
+                                <h6 className=''>EQUIFAX</h6>
+                                <p className='value'>{equ}</p>
+                                <GaugeChart id="gauge-chart5"
+                                    nrOfLevels={500}
+                                    arcsLength={[0.5, 0.5, 0.5]}
+                                    colors={['#163E24', '#2E653E', '#92B396']}
+                                    percent={equ / 900}
+
+                                    arcPadding={0.02}
+                                    style={{ width: "280px" }}
+                                    className="gauge_chart"
+                                />
+                                <div className='score'>
+                                    <h6 className='outoffscore'>300</h6>
+                                    <h6 className='totalscore'>900</h6>
+                                </div>
+                                <div className='graphAsOfDate'>as of {fulldate}</div>
+                            </div>
+                        </Col>
+
+
+
+
+
+                        <Col lg={4} md={12} className="d-flex justify-content-center mb-4">
+                            <div className='graph_exper'>
+                                <h6 className=''>EXPERIAN</h6>
+                                <p className='value'>{expri}</p>
+                                <GaugeChart id="gauge-chart5"
+                                    nrOfLevels={300}
+                                    arcsLength={[0.5, 0.5, 0.5]}
+                                    colors={['#133A1B', '#92B396', '#F1DB77 ']}
+                                    percent={expri / 900}
+                                    arcPadding={0.02}
+                                    className="gauge_chart"
+                                    style={{ width: "280px" }}
+                                />
+                                <div className='score'>
+                                    <h6 className='outoffscore'>300</h6>
+                                    <h6 className='totalscore'>900</h6>
+                                </div>
+                                <div className='graphAsOfDate'>as of {fulldate}</div>
+
+                            </div>
+
+                        </Col>
+                    </Row>
+                </Container>
+            </section>
+
+
+
+
             <Container>
                 <Row>
                     <Col lg={{ span: 10, offset: 1 }} md={12}>
@@ -203,18 +289,18 @@ export default function History() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                     {tranDate.map((e,index)=> {
-                                        return(
-                                            <>
-                                            <tr>
-                                                <td>{e}</td>
-                                                <td>{tranScore[index]}</td>
-                                                <td>{expScore[index]}</td>
-                                                <td>{equiScore[index]}</td>
-                                            </tr>
-                                            </>
-                                        )
-                                     })}
+                                        {tranDate.map((e, index) => {
+                                            return (
+                                                <>
+                                                    <tr>
+                                                        <td>{e}</td>
+                                                        <td>{tranScore[index]}</td>
+                                                        <td>{expScore[index]}</td>
+                                                        <td>{equiScore[index]}</td>
+                                                    </tr>
+                                                </>
+                                            )
+                                        })}
                                     </tbody>
 
                                 </Table>

@@ -43,54 +43,54 @@ export default function Graph() {
   const [idb64, setIdb64] = useState();
   const [addressb64, setAddressb64] = useState();
 
-// console.log("idb64",idb64)
-// console.log("addressb64",addressb64)
- 
+  // console.log("idb64",idb64)
+  // console.log("addressb64",addressb64)
 
- //************** */ get all doc api********** 
+
+  //************** */ get all doc api********** 
   useEffect(() => {
     axios.get(`https://www.mycreditsensei.com:5000/all_doc?trackingToken=${trackingToken}`)
-    .then((response) => {
-      if (response.data.statusCode === 200) {
-        var addressurl = response.data.statusMsg.proof_of_address;
-        var idurl = response.data.statusMsg.proof_of_id;
-        // if (addressurl) {
-          
-        //   var addressurl = response.data.statusMsg.proof_of_address;
-        //   var xhr = new XMLHttpRequest();
-        //   xhr.onload = function () {
-        //     var codes = new Uint8Array(xhr.response);
-        //     var bin = String.fromCharCode.apply(null, codes);
-        //     var b64 = btoa(bin);
-        //     console.log("b64",b64 )
-        //     setAddressb64(b64)
-        //   };
-        //   xhr.open('GET', addressurl);
-        //   xhr.responseType = 'arraybuffer';
-        //   xhr.send();
-        // }
-        
-        if (idurl) {
+      .then((response) => {
+        if (response.data.statusCode === 200) {
+          var addressurl = response.data.statusMsg.proof_of_address;
           var idurl = response.data.statusMsg.proof_of_id;
-          var xhr1 = new XMLHttpRequest();
-          xhr1.onload = function () {
-            var codes = new Uint8Array(xhr1.response);
-            var bin = String.fromCharCode.apply(null, codes);
-            var b64 = btoa(bin);
-            console.log("b64",b64 )
-            setIdb64(b64)
-          };
-          xhr1.open('GET', idurl);
-          xhr1.responseType = 'arraybuffer';
-          xhr1.send();
+          if (addressurl) {
+
+            var addressurl = response.data.statusMsg.proof_of_address;
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function () {
+              var codes = new Uint8Array(xhr.response);
+              var bin = String.fromCharCode.apply(null, codes);
+              var b64 = btoa(bin);
+              console.log("b64ghgh", b64)
+              setAddressb64(b64)
+            };
+            xhr.open('GET', addressurl);
+            xhr.responseType = 'arraybuffer';
+            xhr.send();
+          }
+
+          if (idurl) {
+            var idurl = response.data.statusMsg.proof_of_id;
+            var xhr1 = new XMLHttpRequest();
+            xhr1.onload = function () {
+              var codes = new Uint8Array(xhr1.response);
+              var bin = String.fromCharCode.apply(null, codes);
+              var b64 = btoa(bin);
+              console.log("b64", b64)
+              setIdb64(b64)
+            };
+            xhr1.open('GET', idurl);
+            xhr1.responseType = 'arraybuffer';
+            xhr1.send();
+          }
         }
-      }
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-  })
-  
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  },[])
+
 
   useEffect(async () => {
     //************** */ transuniondisputeDate**********
@@ -118,7 +118,7 @@ export default function Graph() {
               .catch((error) => {
                 console.log("error", error)
               })
-          } 
+          }
         })
         .catch((error) => {
           console.log("error", error)
@@ -246,13 +246,13 @@ export default function Graph() {
 
   }
 
-  const sendTransLetter = () => {  
-  
+  const sendTransLetter = () => {
+
     setLoading(true)
     $.ajax({
       type: "POST",
       url: TRANSUNION_SENT_LETTER,
-      data: { "trackingToken": trackingToken, "transunion_sent_date": fulldate,"addressProofB64":addressb64,"idProofB64":idb64},
+      data: { "trackingToken": trackingToken, "transunion_sent_date": fulldate, "addressProofB64": addressb64, "idProofB64": idb64 },
       success: function (response) {
         if (response.statusMsg === "Dispute letter already sent") {
           setLoading(false)
@@ -270,7 +270,7 @@ export default function Graph() {
 
         if (response.statusCode === 400) {
           setLoading(false)
-           toast.error('Please upload your id proof or address proof', {
+          toast.error('Please upload your id proof or address proof', {
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: true,
@@ -352,14 +352,14 @@ export default function Graph() {
 
 
 
-console.log("idb64",idb64)
-console.log("addressb64",addressb64)
+    console.log("idb64", idb64)
+    console.log("addressb64", addressb64)
 
     setLoadingEqui(true)
     $.ajax({
       type: "POST",
       url: EQUIFAX_SENT_LETTER,
-      data: { "trackingToken": trackingToken, "equifax_sent_date": fulldate,"addressProofB64":addressb64,"idProofB64":idb64 },
+      data: { "trackingToken": trackingToken, "equifax_sent_date": fulldate, "addressProofB64": addressb64, "idProofB64": idb64 },
       success: function (response) {
         console.log("response sent letter", response)
         if (response.statusMsg === "Dispute letter already sent") {
@@ -415,7 +415,7 @@ console.log("addressb64",addressb64)
     });
 
 
-    
+
   }
 
 
@@ -463,7 +463,7 @@ console.log("addressb64",addressb64)
     $.ajax({
       type: "POST",
       url: EXPERIAN_SENT_LETTER,
-      data: { "trackingToken": trackingToken, "experian_sent_date": fulldate ,"addressProofB64":addressb64,"idProofB64":idb64},
+      data: { "trackingToken": trackingToken, "experian_sent_date": fulldate, "addressProofB64": addressb64, "idProofB64": idb64 },
       success: function (response) {
         console.log(response)
         if (response.statusMsg === "Dispute letter already sent") {
@@ -569,7 +569,7 @@ console.log("addressb64",addressb64)
                       : tranStep !== 0 && waitForResult === false ?
                         <button className='homeDisputeBtn' onClick={sendTransLetter}>MARK LETTER AS SENT</button>
                         :
-                        <button className='homeDisputeBtn'>Wait For result</button>
+                        <div disabled></div>
                   }
 
                 </div>
@@ -622,7 +622,7 @@ console.log("addressb64",addressb64)
                       : equiStep !== 0 && waitForResultEqui === false ?
                         <button className='homeDisputeBtn' onClick={sendEquiLetter}>MARK LETTER AS SENT</button>
                         :
-                        <button className='homeDisputeBtn'>Wait For result</button>
+                        <div disabled></div>
                   }
 
 
@@ -678,7 +678,7 @@ console.log("addressb64",addressb64)
                       : expriStep !== 0 && waitForResultExp === false ?
                         <button className='homeDisputeBtn' onClick={sendExpriLetter}>MARK LETTER AS SENT</button>
                         :
-                        <button className='homeDisputeBtn'>Wait For result</button>
+                        <div disabled></div>
                   }
 
                 </div>
