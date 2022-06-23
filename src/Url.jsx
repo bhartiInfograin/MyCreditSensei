@@ -38,6 +38,5 @@ export const SENT_DATE = "https://www.mycreditsensei.com:5000/sentDate";
 export const EXPERIAN_DISPUTE_LETTER = "https://www.mycreditsensei.com:5000/experian_dispute_letter";
 export const EQUIFAX_DISPUTE_LETTER= "https://www.mycreditsensei.com:5000/equifax_dispute_letter";
 export const TRANSUNION_DISPUTE_LETTER= "https://www.mycreditsensei.com:5000/transunion_dispute_letter";
-
-
+export const CREDIT_SCORE = "https://www.mycreditsensei.com:5000/credit_score";
 
