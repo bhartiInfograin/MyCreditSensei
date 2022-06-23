@@ -307,7 +307,7 @@ export default function Myaccount() {
 
                                 </div>
 
-                                <div className='documents'>
+                                <div className='documents' id='info'>
                                     <table className=" table  table-sm table-striped table-hover" >
                                         <tbody>
                                             <tr>
@@ -347,7 +347,7 @@ export default function Myaccount() {
                                     <div className='myaccount_faq'>
 
                                         <p className='faq'>FAQ</p>
-                                        <Accordion defaultActiveKey="0">
+                                        <Accordion>
                                             <Accordion.Item eventKey="0">
                                                 <Accordion.Header>Why should I add my proof of address and photo ID?</Accordion.Header>
                                                 <Accordion.Body>

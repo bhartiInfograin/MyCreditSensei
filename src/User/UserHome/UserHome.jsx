@@ -8,15 +8,15 @@ import Graph from './Graph';
 import { Link } from 'react-router-dom';
 import {FaCheckCircle } from 'react-icons/fa';
 import axios from 'axios';
-import {CREDIT_SCORE} from '../../Url'
+import {CREDIT_SCORE} from '../../Url';
 
 
 export default function UserHome() {
   //  =====plan purchase popup start=======
-  // const [show, setShow] = useState(true);
-  // const handleClose = ()=>{
-  //   setShow(false)
-  // }
+  const [show, setShow] = useState(true);
+  const handleClose = ()=>{
+    setShow(false)
+  }
 //  =====plan purchase popup end=======
   const summary = JSON.parse(sessionStorage.getItem("SUMMARY"));
   const equ = JSON.parse(sessionStorage.getItem("EQUIFAX"));
@@ -186,7 +186,36 @@ export default function UserHome() {
         </Row>
       </Container>
 
-
+      <section className='mb-5'>
+                    <Container>
+                        <Row className='d-flex justify-content-center user_history'>
+                            <Col lg={10} sm={12}>
+                            <div className='user_home_title mt-5'>
+                                <p style={{fontSize:"20px"}}>My Accounts</p>
+                            </div>
+                            </Col>
+                        </Row>
+                        <Row  className='d-flex justify-content-center user_history mt-3'>
+                            <Col lg={5}  style={{background: "#1987540f",padding: "30px 25px"}}>
+                           
+                                <div className="personal_info">
+                                    <div className="user_name">User name</div>
+                                    <div className="user_email">user@gmail.com</div>
+                                    <div className="user_address">1500 osprey <br></br>atlanta, GA 30326</div>
+                                </div>
+                              
+                            </Col>
+                            <Col lg={5}  style={{background: "#1987540f",padding: "30px 25px"}}>
+                           
+                                <div className="proof_info">
+                                    <div className="proof_photo">Photo ID <FaCheckCircle  className='checkicon_gray'/> <span><Link to="/myaccount">Add It</Link></span></div>
+                                    <div className="proof_address mt-3">Proof of address <FaCheckCircle  className='checkicon_gray'/> <span><Link to="/myaccount">Add It</Link></span></div>
+                                </div>
+                         
+                            </Col>
+                        </Row>
+                    </Container>
+                </section>
 
      
       <Footer />
