@@ -32,6 +32,7 @@ export default function History() {
 
     var tranScore = []
     var tranDate = []
+
     if (tramsunionScore) {
         tramsunionScore.map((e) => {
             var scoredate = e.date
@@ -39,7 +40,6 @@ export default function History() {
             tranScore.push(e.creditscore)
         })
     }
-
 
 
     ChartJS.register(
@@ -53,24 +53,25 @@ export default function History() {
         Legend
     );
 
-    const options = {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'top'
-            },
-            title: {
-                display: true,
-                text: 'Chart.js Line Chart',
-            },
-        },
-    };
-
     const labels = tranDate;
-
     const data = {
         labels,
         datasets: [
+            {
+                fill: true,
+                label: 'Transunion',
+                data: tranScore,
+                borderColor: 'rgb(53, 162, 235)',
+                backgroundColor: 'rgba(53, 162, 235, 0.5)',
+            },
+        ],
+    };
+
+
+    const labels1 = tranDate;
+    const data1 = {
+        labels1,
+        datasets1: [
             {
                 fill: true,
                 label: 'Transunion',
