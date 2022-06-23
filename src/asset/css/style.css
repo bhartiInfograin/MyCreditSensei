@@ -3347,3 +3347,29 @@ button {
     .contactus_form{padding: 0px;}
     .footercompanylist{padding: 0px;}
   }
+
+
+
+
+  /* ============== purchase_plan modal css============ */
+  .purchase_plan .modal-content {
+    /* background: #7bfeca; */
+    border-radius: 0.5rem;
+  }
+  .purchase_plan .modal-body{
+    border: 2px solid #07543c;
+    box-shadow: 0px 0px 10px 2px #2e542e;
+  }
+ 
+ 
+  .purchase_btn{
+    display: flex;
+    justify-content: center;
+    padding: 14px;
+  }
+  .purchase_btn button{
+    background: #198754;
+    border: none;
+    color: #fff;
+    padding: 8px 70px;
+  }

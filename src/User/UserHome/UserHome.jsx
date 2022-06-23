@@ -1,15 +1,20 @@
-import React,{useEffect} from 'react';
+import React , {useState,useEffect}  from 'react';
+
 import UserHeader from '../Common/UserHeader';
-import { Container, Row, Col, Table } from 'react-bootstrap';
+import { Container, Row, Col, Table , Modal } from 'react-bootstrap';
 import { FaArrowRight } from 'react-icons/fa';
 import Footer from '../../Common/Footer';
 import Graph from './Graph';
 import { Link } from 'react-router-dom';
+import {FaCheckCircle } from 'react-icons/fa';
 import axios from 'axios';
 import {CREDIT_SCORE} from '../../Url'
 
 
 export default function UserHome() {
+  //  =====plan purchase popup start=======
+  const [show, setShow] = useState(true);
+//  =====plan purchase popup end=======
   const summary = JSON.parse(sessionStorage.getItem("SUMMARY"));
   const equ = JSON.parse(sessionStorage.getItem("EQUIFAX"));
   const trans = JSON.parse(sessionStorage.getItem("TRANSUNION"));
@@ -188,6 +193,46 @@ console.log("expri",expri)
 
      
       <Footer />
+
+        {/* =====plan purchase popup start======= */}
+        <Modal show={show}   backdrop="static" keyboard={false} className="purchase_plan">
+        
+        <Modal.Body>
+          <Container>
+            <Row>
+              <Col lg={12} md={12}>
+                <div className='basiccard d-flex justify-content-center'> 
+            <div className='pricing_plan' style={{border:"none"}} >
+              <h5>SmartCredit  PLAN</h5>
+              <hr></hr>
+              <div className='subprice'>
+              <p className='price' style={{fontSize:"2rem", paddingBottom:"5px"}}> $39 /mo</p>
+              <p className='cancleText'>CANCEL ANY TIME</p>
+              </div>
+              <hr></hr>
+              <ul className='p-0'>
+                <li><FaCheckCircle className='checkicon'/>Unlimited Credit Sensei Disputes</li>
+                <li> <FaCheckCircle  className='checkicon'/>Monthly 3 Bureaus  Reports & Scores</li>
+              </ul>
+              <h5>SmartCredit</h5>
+              <ul className='p-0'>
+                <li> <FaCheckCircle  className='checkicon'/>Identity Theft Insurance ($1m)</li>
+                <li><FaCheckCircle  className='checkicon'/>Credit Monitoring & Alerts (TU)</li>
+              </ul>
+              <p className='text-center cardtext'>Includes SmartCredit Money Manager with 2 monthly Transunion Report &  Score updates in SmartCredit.</p>
+              <div className="purchase_btn">
+              <button>PURCHASE</button>
+            </div>
+            </div>
+            
+            </div>
+              </Col>
+            </Row>
+          </Container>
+        </Modal.Body>
+      
+      </Modal>
+        {/* =====plan purchase popup end======= */}
     </>
   )
 }
