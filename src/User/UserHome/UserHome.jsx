@@ -24,9 +24,6 @@ export default function UserHome() {
   const expri = JSON.parse(sessionStorage.getItem("EXPERIAN"));
   const trackingToken = (sessionStorage.getItem("TRACKINGTOKEN"));
 
-console.log("equ",equ)
-console.log("trans",trans)
-console.log("expri",expri)
 
    useEffect(() => {
          const article = {
@@ -45,10 +42,7 @@ console.log("expri",expri)
          })
 
 
-  },[])
-
-
-
+  })
 
 
 
@@ -227,7 +221,7 @@ console.log("expri",expri)
       <Footer />
 
         {/* =====plan purchase popup start======= */}
-        <Modal show={show}   backdrop="static" keyboard={false} className="purchase_plan">
+        {/* <Modal show={show}   backdrop="static" keyboard={false} className="purchase_plan">
         
         <Modal.Body>
           <Container>
@@ -263,7 +257,7 @@ console.log("expri",expri)
           </Container>
         </Modal.Body>
       
-      </Modal>
+      </Modal> */}
         {/* =====plan purchase popup end======= */}
     </>
   )
