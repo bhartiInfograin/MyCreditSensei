@@ -1424,6 +1424,7 @@ button {
     font-size: 20px;
     color: #4a4a4a;
     font-weight: normal;
+    font-weight: 600;
 }
 
 .history_sec2_titile {
@@ -1507,11 +1508,12 @@ button {
     padding: 31px;
 }
 
-.history_sec3_title h1 {
+.history_sec3_title h1,.history_sec4_title h1 {
     margin: 0;
     font-size: 20px;
     color: #4a4a4a;
     font-weight: normal;
+    font-weight: 600;
 }
 
 .history_sec3_item {
@@ -1552,7 +1554,8 @@ button {
 }
 
 .history_graph{
-    padding: 78px;
+    padding-right: 159px;
+    padding-left: 159px;
 }
 
 
@@ -3352,6 +3355,9 @@ button {
 
 
   /* ============== purchase_plan modal css============ */
+  .modal-backdrop.show {
+    opacity: 0.90 !important;
+}
   .purchase_plan .modal-content {
     /* background: #7bfeca; */
     border-radius: 0.5rem;
@@ -3373,3 +3379,43 @@ button {
     color: #fff;
     padding: 8px 70px;
   }
+
+  .user_history .nav{
+    justify-content: space-evenly;
+  }
+  .user_history .nav-tabs {
+    border-bottom: none;
+}
+.user_history .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+       color: #14684e !important;
+    background-color: #fff !important;
+    border-color: transparent !important;
+    font-weight: 600;
+}
+.user_history .nav-link{
+    color: #0d0e0e !important;
+    font-weight: 600;
+}
+.user_history .nav-tabs .nav-link:hover {
+    border: transparent !important;
+    border-color: transparent !important;
+    color: #14684e !important;
+}
+.personal_info .user_name{
+    font-size: 19px;
+}
+.personal_info .user_email{
+    font-size: 15px;
+}
+.personal_info .user_address{
+    padding-top: 12px;
+    font-size: 15px;
+    color: #454242;
+}
+.proof_info svg{
+    color: #bfbebe;
+}
+.proof_info span a{
+    color: green;
+    text-decoration: none;
+}

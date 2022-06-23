@@ -3,6 +3,7 @@ import { Container, Row, Col, Image, Button, Table, Tabs, Tab } from 'react-boot
 import UserHeader from '../Common/UserHeader';
 import Graph from '../UserHome/Graph';
 import Footer from '../../Common/Footer'
+
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -147,9 +148,9 @@ export default function History() {
             <UserHeader />
             <Graph />
             <Container>
-                <Row>
-                    <Col lg={{ span: 10, offset: 1 }} md={12}>
-                        <div className='histroy_title mt-5'>
+                <Row className='d-flex justify-content-center user_history'>
+                    <Col lg={11} md={12}>
+                        <div className='histroy_title mt-5 mb-3'>
                             <h1 >History</h1>
                         </div>
                     </Col>
@@ -158,20 +159,20 @@ export default function History() {
                         id="uncontrolled-tab-example"
                         className="mb-3"
                     >
-                        <Tab eventKey="home" title="Transunion">
-                            <h6>tr</h6>
+                        <Tab eventKey="home" title="Transunion" className='pri'>
+                          
                             <div className='history_graph'>
                                 <Line data={data} />
                             </div>
                         </Tab>
-                        <Tab eventKey="profile" title="Experian">
-                            <h6>ex</h6>
+                        <Tab eventKey="profile" title="Experian" className=''>
+                    
                             <div className='history_graph'>
                                 <Line data={data1} />
                             </div>
                         </Tab>
-                        <Tab eventKey="contact" title="Equifax">
-                            <h6>Eq</h6>
+                        <Tab eventKey="contact" title="Equifax" className=''>
+                         
                             <div className='history_graph'>
                                 <Line data={data2} />
                             </div>
@@ -186,8 +187,8 @@ export default function History() {
 
             <section className='mb-5'>
                 <Container>
-                    <Row>
-                        <Col lg={{ span: 10, offset: 1 }} md={12}>
+                    <Row className='d-flex justify-content-center user_history'>
+                        <Col lg={11} md={12}>
                             <div className='history_sec3_title mt-5'>
                                 <h1> Reports</h1>
                             </div>
@@ -224,7 +225,7 @@ export default function History() {
                 </Container>
             </section>
 
-
+              
 
 
 
