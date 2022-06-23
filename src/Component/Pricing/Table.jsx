@@ -27,8 +27,8 @@ export default function Price_Table() {
                                         <tr>
                                             <th></th>
                                             <th>Lexington law</th>
-                                            <th>Lexington law</th>
-                                            <th>creditrepair.com</th>
+                                            {/* <th>Lexington law</th> */}
+                                            <th>mycreditsensei.com</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -36,26 +36,26 @@ export default function Price_Table() {
                                             <td className='table_count'>Cost</td>
                                             <td>Free w/3 bureaus
                                                 Subscription</td>
-                                            <td> $12-$19 per month</td>
-                                            <td>$99
+                                            {/* <td> $12-$19 per month</td> */}
+                                            <td>$39
                                                 per month</td>
                                         </tr>
                                         <tr>
                                             <td className='table_count'>Dispute per month</td>
                                             <td>Unlimited</td>
-                                            <td>2-3</td>
+                                            {/* <td>2-3</td> */}
                                             <td>2-3</td>
                                         </tr>
                                         <tr>
                                             <td className='table_count'>Bureaus can ignore disputes</td>
                                             <td>No</td>
-                                            <td>Yes</td>
+                                            {/* <td>Yes</td> */}
                                             <td>Yes</td>
                                         </tr>
                                         <tr>
                                             <td className='table_count'>Video credit coaching</td>
                                             <td>Yes</td>
-                                            <td>No</td>
+                                            {/* <td>No</td> */}
                                             <td>No</td>
                                         </tr>
                                     </tbody>
