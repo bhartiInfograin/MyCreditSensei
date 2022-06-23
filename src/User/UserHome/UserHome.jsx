@@ -1,15 +1,50 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import UserHeader from '../Common/UserHeader';
 import { Container, Row, Col, Table } from 'react-bootstrap';
 import { FaArrowRight } from 'react-icons/fa';
 import Footer from '../../Common/Footer';
 import Graph from './Graph';
 import { Link } from 'react-router-dom';
-
+import axios from 'axios';
+import {CREDIT_SCORE} from '../../Url'
 
 
 export default function UserHome() {
   const summary = JSON.parse(sessionStorage.getItem("SUMMARY"));
+  const equ = JSON.parse(sessionStorage.getItem("EQUIFAX"));
+  const trans = JSON.parse(sessionStorage.getItem("TRANSUNION"));
+  const expri = JSON.parse(sessionStorage.getItem("EXPERIAN"));
+  const trackingToken = (sessionStorage.getItem("TRACKINGTOKEN"));
+
+console.log("equ",equ)
+console.log("trans",trans)
+console.log("expri",expri)
+
+   useEffect(() => {
+         const article = {
+          "trackingToken" : trackingToken,
+          "transunion_credit_score" : trans,
+          "experian_credit_score":expri,
+          "equifax_credit_score" : equ
+         }
+
+         const data = axios.post(CREDIT_SCORE, article)
+         .then((res) => {
+             console.log("res",res)
+         })
+         .catch((err) => {
+             console.log("error",err)
+         })
+
+
+  },[])
+
+
+
+
+
+
+
 
   return (
     <>
