@@ -9,6 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import jsPDF from 'jspdf';
 import axios from 'axios';
 import {EXPERIAN_DISPUTE_LETTER} from '../../Url';
+import Header from './Header'
 
 export default function ExperianDispute() {
     const bundledata = JSON.parse(sessionStorage.getItem("BUNDLEDATA"));
@@ -386,29 +387,7 @@ export default function ExperianDispute() {
 
     return (
         <>
-            <section className='selectdipute_header'>
-                <Container fluid>
-                    <Row>
-                        <Col lg={4}>
-                            <div>
-                                <Link to="/creditItem" className=''><img src={logo} className="headerlogo" /></Link>
-                            </div>
-
-                        </Col>
-                        <Col lg={4}>
-                            <div className='dispute_heading'>
-                                EXPEIRAN DISPUTE
-                            </div>
-
-                        </Col>
-                        <Col lg={4}>
-                            <div className='dispute_user'>
-                                < FaUserCircle />
-                            </div>
-                        </Col>
-                    </Row>
-                </Container>
-            </section>
+            <Header title=" EXPEIRAN DISPUTE"/>
             <div className='mt-5'>
                 <DisputeStepper progress={progress} />
             </div>
