@@ -20,6 +20,10 @@ import {
 export default function Graph() {
   var todayDate = new Date()
   var fulldate = todayDate.getDate() + "/" + (todayDate.getMonth() + 1) + "/" + todayDate.getFullYear()
+
+
+  
+ 
   const equ = JSON.parse(sessionStorage.getItem("EQUIFAX"));
   const trans = JSON.parse(sessionStorage.getItem("TRANSUNION"));
   const expri = JSON.parse(sessionStorage.getItem("EXPERIAN"));
@@ -43,9 +47,7 @@ export default function Graph() {
   const [idb64, setIdb64] = useState();
   const [addressb64, setAddressb64] = useState();
 
-  // console.log("idb64",idb64)
-  // console.log("addressb64",addressb64)
-
+  
 
   //************** */ get all doc api********** 
   useEffect(() => {
@@ -55,30 +57,38 @@ export default function Graph() {
           var addressurl = response.data.statusMsg.proof_of_address;
           var idurl = response.data.statusMsg.proof_of_id;
           if (addressurl) {
-
             var addressurl = response.data.statusMsg.proof_of_address;
             var xhr = new XMLHttpRequest();
             xhr.onload = function () {
               var codes = new Uint8Array(xhr.response);
-              var bin = String.fromCharCode.apply(null, codes);
-              var b64 = btoa(bin);
-              console.log("b64ghgh", b64)
-              setAddressb64(b64)
+              var binary = '';
+              var len = codes.byteLength;
+              for (var i = 0; i < len; i++) {
+                binary += String.fromCharCode(codes[i]);
+              }
+              if (binary) {
+                var b64 = btoa(binary);
+                  setAddressb64(b64)
+              }
             };
             xhr.open('GET', addressurl);
             xhr.responseType = 'arraybuffer';
             xhr.send();
           }
-
           if (idurl) {
             var idurl = response.data.statusMsg.proof_of_id;
             var xhr1 = new XMLHttpRequest();
             xhr1.onload = function () {
               var codes = new Uint8Array(xhr1.response);
-              var bin = String.fromCharCode.apply(null, codes);
-              var b64 = btoa(bin);
-              console.log("b64", b64)
-              setIdb64(b64)
+              var binary = '';
+              var len = codes.byteLength;
+              for (var i = 0; i < len; i++) {
+                binary += String.fromCharCode(codes[i]);
+              }
+              if (binary) {
+                var b64 = btoa(binary);
+                setIdb64(b64)
+              }
             };
             xhr1.open('GET', idurl);
             xhr1.responseType = 'arraybuffer';
@@ -89,7 +99,7 @@ export default function Graph() {
       .catch((err) => {
         console.log(err)
       })
-  },[])
+  }, [])
 
 
   useEffect(async () => {
@@ -193,7 +203,7 @@ export default function Graph() {
                 console.log("error", error)
               })
           } else {
-            console.log("nothing")
+            // console.log("nothing")
           }
         })
         .catch((error) => {
@@ -247,7 +257,6 @@ export default function Graph() {
   }
 
   const sendTransLetter = () => {
-
     setLoading(true)
     $.ajax({
       type: "POST",
@@ -347,14 +356,6 @@ export default function Graph() {
   }
 
   const sendEquiLetter = () => {
-
-
-
-
-
-    console.log("idb64", idb64)
-    console.log("addressb64", addressb64)
-
     setLoadingEqui(true)
     $.ajax({
       type: "POST",
@@ -456,7 +457,6 @@ export default function Graph() {
       }
     ];
   }
-
 
   const sendExpriLetter = () => {
     setLoadingExp(true)

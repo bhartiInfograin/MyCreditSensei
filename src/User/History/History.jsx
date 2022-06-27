@@ -59,12 +59,7 @@ export default function History() {
     useEffect(() => {
         axios.get(`https://www.mycreditsensei.com:5000/getCreditScore?trackingToken=${trackingToken}`)
             .then((res) => {
-                console.log(res.data)
-
-
-
-                // console.log("data1",data1)
-
+              
                 if (res.data.statusCode === 200) {
                     setTransunionScore(res.data.statusMsj.transunion)
                     setExperianScore(res.data.statusMsj.experian)

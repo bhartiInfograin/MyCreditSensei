@@ -834,7 +834,7 @@ export default function CreditItem() {
                                             <Col lg={12}>
                                               {equifaxInquiry ?
                                                 equifaxInquiry.map((e) => {
-                                                  console.log("e", e)
+                                
                                                   return (
                                                     <Table size="sm" className='maintable '>
                                                       <tr>

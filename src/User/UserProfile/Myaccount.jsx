@@ -33,7 +33,6 @@ export default function Myaccount() {
     const state = bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.BorrowerAddress[0].CreditAddress.stateCode;
     const zip = bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.BorrowerAddress[0].CreditAddress.postalCode;
 
-
     const handleClose = async () => {
         setShow(false)
         setImgModalShow(false)
@@ -113,22 +112,9 @@ export default function Myaccount() {
             .then((data) => {
                 if (data.data.statusCode === 200) {
                     var url = data.data.statusMsg
-                    console.log("url", url)
-                    // https://www.mycreditsensei.com:5000/upload/Tue%20Jun%2014%202022%2006:01:24%20GMT+0000%20(Coordinated%20Universal%20Time)download.jpg
-
-
-                    // console.log("url",url.url.split("/")[4])
-
-                    var month = url.split("/")[4].split('%')[1]
-                    var date = url.split("/")[4].split('%')[2]
-                    var year = url.split("/")[4].split('%')[3]
-
-
-                    console.log("month", month)
-                    console.log("date", date)
-                    console.log("year", year)
-                    var fulldate = month + "-" + date
-                    setUploadDateAdd(fulldate)
+                    var url2 = parseInt(url.split("/")[4])
+                    var date = new Date(url2 * 1000).toLocaleDateString('en-GB');
+                    setUploadDateAdd(date)
                 }
             })
             .catch((error) => {
@@ -146,11 +132,9 @@ export default function Myaccount() {
             .then((data) => {
                 if (data.data.statusCode === 200) {
                     var url = data.data.statusMsg
-                    var month = url.split("/")[4].split('%')[1]
-                    var date = url.split("/")[4].split('%')[2]
-                    // var year = url.split("/")[4].split(' ')[3]
-                    var fulldate = month + "-" + date
-                    setUploadDateId(fulldate)
+                    var url2 = parseInt(url.split("/")[4])
+                    var date = new Date(url2 * 1000).toLocaleDateString('en-GB');
+                    setUploadDateId(date)
                 }
             })
             .catch((error) => {
