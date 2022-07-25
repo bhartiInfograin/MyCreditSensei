@@ -18,7 +18,6 @@ export default function Login() {
 
     let Navigate = useNavigate()
 
-
     useEffect(() => {
         $("#email").hide()
         $("#password").hide()
@@ -51,7 +50,6 @@ export default function Login() {
             data: article
         })
             .then((res) => {
-                console.log("res", res.data);
                 if (res.data.statusMsg === "Request failed with status code 401") {
                     setLoading(false)
                     return toast.error('Invalid Email or Password', {
@@ -66,7 +64,6 @@ export default function Login() {
                     });
                 }
                 if (res.data) {
-
                     var trackingToken = res.data.trackingToken
                     var report = res.data.data.split(">")[8].split("<")[0]
                     var report_data = JSON.parse(report);
@@ -127,12 +124,12 @@ export default function Login() {
                                                     type="email"
                                                     placeholder="Your Email"
                                                     className='validate'
-                                                    name="email" s
+                                                    name="email" 
                                                     onChange={(e) => setEmail(e.target.value)}
                                                     required
                                                 />
                                                 <p className='error' id="email" style={{ alignSelf: "flex-start" }} >*Enter Valid Email</p>
-                                                <Link to="/emailrecovery" className='forgotpwd'><p className='forgotpwd' >Forgot Email?</p></Link>
+                                                {/* <Link to="/emailrecovery" className='forgotpwd'><p className='forgotpwd' >Forgot Email?</p></Link> */}
                                                 <Form.Label className="mt-3 fromlabel">Password</Form.Label>
                                                 <Form.Control
                                                     type="password"
@@ -143,11 +140,8 @@ export default function Login() {
                                                     required
                                                 />
                                                 <p className='error' id="password" style={{ alignSelf: "flex-start" }} >*Enter Password</p>
-                                                <Link to="/forgotpwd" className='forgotpwd'>  <p className='forgotpwd' >Forgot Password?</p></Link>
-                                                <Form.Group className="mb-3 fromlabel" controlId="formBasicCheckbox">
-                                                    <Form.Check type="checkbox" label="Remember Me" />
-                                                </Form.Group>
-                                                <Button className='signBtn btn-dark fromlabel' onClick={submitHandler}> Login </Button>
+                                                {/* <Link to="/forgotpwd" className='forgotpwd'>  <p className='forgotpwd' >Forgot Password?</p></Link> */}
+                                                <Button className='signBtn btn-dark fromlabel mt-3' onClick={submitHandler}> Login </Button>
                                             </div>
                                         </div>
                                     </Col>

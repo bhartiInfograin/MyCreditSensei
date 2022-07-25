@@ -38,7 +38,7 @@ function PasswordRecovry() {
     useEffect(async () => {
         try {
             setLoading(true);
-            await axios.get(`https://stage-sc.consumerdirect.com/api/signup/security-questions?clientKey=${clientKey}&trackingToken=${trackingToken} `)
+            await axios.get(`https://www.smartcredit.com/api/signup/security-questions?clientKey=${clientKey}&trackingToken=${trackingToken} `)
                 .then(resp => {
 
                     var securityQuestion = resp.data.securityQuestions

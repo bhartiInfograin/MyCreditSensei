@@ -14,13 +14,13 @@ export default function RoundFirst() {
                             <div className='roundFirst'>
                                 <h2>Great Job!</h2>
                                 <img src={logo} className="logo" />
-                                <p>Your <b>Equifax Round 1 </b>dispute letter has been emailed  to <b>alonzo@creditsenei.com</b></p>
+                                <p>Your <b>Equifax Round 1 </b>dispute letter has been created successfully</p>
 
                                 <div className='line'>------------</div>
                                 <p>What would you like to do next?</p>
-                                <Link to="/experiandispute" type="button" className='disputebtn'>CREATE EXPERIAN DISPUTE</Link>
-                                <Link to="/transuniondispute" type="button" className='disputebtn1'>CREATE TRANSUNION DISPUTE</Link>
-                                <Link to="/useHome" type="button" className='disputebtn2'>GO TO DASHBOARD</Link>
+                                <Link to="/experiandispute"  className='disputebtn'>CREATE EXPERIAN DISPUTE</Link>
+                                <Link to="/transuniondispute" className='disputebtn1'>CREATE TRANSUNION DISPUTE</Link>
+                                <Link to="/useHome"  className='disputebtn2'>GO TO DASHBOARD</Link>
 
                             </div>
 

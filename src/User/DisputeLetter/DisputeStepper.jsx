@@ -16,7 +16,7 @@ export default function Step2(props) {
      <Box sx={{ p:2, width: '100%' }} >
      <Stepper activeStep={props.progress} alternativeLabel>
         {steps.map((label) => (
-          <Step key={label} >
+          <Step key={label} className="demo1" >
             <StepLabel>{label}</StepLabel>
           </Step>
         ))}

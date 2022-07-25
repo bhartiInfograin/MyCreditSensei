@@ -13,7 +13,7 @@ export default function Price_Table() {
                             <div className='pricing_sec2_header '>
                                 <h3>Out with the old…in with My Credit Sensei</h3>
                                 <p className='sec2_content'>
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse consequuntur odio dolorum obcaecati ipsa, fugit natus perferendis earum alias totam placeat, similique rerum maxime. Alias dicta dolorum amet officiis numquam?
+                                    Big credit repair companies are better at deleting dollars from your pocket than negative accounts from your credit report. That’s why we created My Credit Sensei.
                                 </p>
                             </div>
                         </Col>
@@ -26,38 +26,33 @@ export default function Price_Table() {
                                     <thead>
                                         <tr>
                                             <th></th>
+                                            <th>My Credit Sensei</th>
                                             <th>Lexington law</th>
-                                            {/* <th>Lexington law</th> */}
-                                            <th>mycreditsensei.com</th>
+                                            <th> creditrepair.com®</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
                                             <td className='table_count'>Cost</td>
-                                            <td>Free w/3 bureaus
-                                                Subscription</td>
-                                            {/* <td> $12-$19 per month</td> */}
                                             <td>$39
                                                 per month</td>
+                                            <td>$89 - $129
+                                                per month</td>
+                                            <td> $12-$19 per month</td>
                                         </tr>
                                         <tr>
                                             <td className='table_count'>Dispute per month</td>
                                             <td>Unlimited</td>
-                                            {/* <td>2-3</td> */}
+                                            <td>2-3</td>
                                             <td>2-3</td>
                                         </tr>
                                         <tr>
                                             <td className='table_count'>Bureaus can ignore disputes</td>
                                             <td>No</td>
-                                            {/* <td>Yes</td> */}
+                                            <td>Yes</td>
                                             <td>Yes</td>
                                         </tr>
-                                        <tr>
-                                            <td className='table_count'>Video credit coaching</td>
-                                            <td>Yes</td>
-                                            {/* <td>No</td> */}
-                                            <td>No</td>
-                                        </tr>
+
                                     </tbody>
                                 </Table>
 

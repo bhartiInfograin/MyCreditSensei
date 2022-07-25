@@ -1,8 +1,17 @@
 //******************** */ stage api *******************************//
-export const TREACKIN_TOKEN = "https://stage-sc.consumerdirect.com/api/signup/start?clientKey=cf2bc25b-5eaa-407e-9783-ae6498db4eb4";
-export const CREATE = "https://stage-sc.consumerdirect.com/api/signup/customer/create";
-export const UPDATE_IDENTITY = "https://stage-sc.consumerdirect.com/api/signup/customer/update/identity";
-export const ID_VERIFICATION = "https://stage-sc.consumerdirect.com/api/signup/id-verification";
+// export const TREACKIN_TOKEN = "https://stage-sc.consumerdirect.com/api/signup/start?clientKey=cf2bc25b-5eaa-407e-9783-ae6498db4eb4";
+
+// export const CREATE = "https://stage-sc.consumerdirect.com/api/signup/customer/create";
+
+
+
+//******************** */ singup production api *******************************//
+export const TREACKIN_TOKEN = "https://www.smartcredit.com/api/signup/start?clientKey=cf2bc25b-5eaa-407e-9783-ae6498db4eb4";
+export const CREATE = "https://www.smartcredit.com/api/signup/customer/create";
+export const UPDATE_IDENTITY = "https://www.smartcredit.com/api/signup/customer/update/identity";
+export const ID_VERIFICATION = "https://www.smartcredit.com/api/signup/id-verification";
+export const COMPLETE = 'https://www.smartcredit.com/api/signup/complete'
+export const CREDIT_CARD = 'https://www.smartcredit.com/api/signup/customer/update/credit-card'
 
 
 
@@ -40,3 +49,5 @@ export const EQUIFAX_DISPUTE_LETTER= "https://www.mycreditsensei.com:5000/equifa
 export const TRANSUNION_DISPUTE_LETTER= "https://www.mycreditsensei.com:5000/transunion_dispute_letter";
 export const CREDIT_SCORE = "https://www.mycreditsensei.com:5000/credit_score";
 
+
+export const CONTACTUS = "https://www.mycreditsensei.com:5000/contactus";

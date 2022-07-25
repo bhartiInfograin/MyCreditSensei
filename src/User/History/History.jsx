@@ -1,9 +1,9 @@
 import React from 'react';
-import { Container, Row, Col, Image, Button, Table, Tabs, Tab } from 'react-bootstrap';
+import { Container, Row, Col,Table, Tabs, Tab } from 'react-bootstrap';
 import UserHeader from '../Common/UserHeader';
 import GaugeChart from 'react-gauge-chart'
-
-import Footer from '../../Common/Footer'
+import { useNavigate } from 'react-router-dom';
+import UserFooter from '../Common/UserFooter';
 
 import {
     Chart as ChartJS,
@@ -44,7 +44,7 @@ export default function History() {
     const expri = JSON.parse(sessionStorage.getItem("EXPERIAN"));
     var todayDate = new Date()
     var fulldate = todayDate.getDate() + "/" + (todayDate.getMonth() + 1) + "/" + todayDate.getFullYear()
-
+    let Navigate = useNavigate()
 
 
     var tranScore = []
@@ -59,17 +59,20 @@ export default function History() {
     useEffect(() => {
         axios.get(`https://www.mycreditsensei.com:5000/getCreditScore?trackingToken=${trackingToken}`)
             .then((res) => {
-              
+                console.log("res",res)
                 if (res.data.statusCode === 200) {
                     setTransunionScore(res.data.statusMsj.transunion)
                     setExperianScore(res.data.statusMsj.experian)
                     setEquifaxScore(res.data.statusMsj.equifax)
                 }
+                if(res.data.statusCode === 400){
+                    Navigate('/login')
+                }
             })
             .catch((err) => {
                 console.log(err)
             })
-    }, [])
+    },[])
 
     if (tramsunionScore) {
         tramsunionScore.map((e) => {
@@ -227,8 +230,8 @@ export default function History() {
 
 
 
-
-            <Container>
+<section className='history_graph_sec'>
+<Container>
                 <Row className='d-flex justify-content-center user_history'>
                     <Col lg={11} md={12}>
                         <div className='histroy_title mt-5 mb-3'>
@@ -261,6 +264,8 @@ export default function History() {
                     </Tabs>
                 </Row>
             </Container>
+</section>
+        
 
 
 
@@ -275,7 +280,7 @@ export default function History() {
                             </div>
                             <div className="history_sec3_item">
 
-                                <Table striped bordered hover>
+                                <Table striped bordered hover responsive>
                                     <thead>
                                         <tr>
                                             <th scope="col">Date</th>
@@ -311,7 +316,7 @@ export default function History() {
 
 
 
-            <Footer />
+            <UserFooter />
         </>
     )
 }

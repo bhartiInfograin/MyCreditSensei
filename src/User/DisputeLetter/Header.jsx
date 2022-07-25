@@ -5,6 +5,8 @@ import logo from '../../asset/image/newlogo.png';
 import { Link, useNavigate } from 'react-router-dom'
 
 const Header = (props) => {
+    const bundledata = JSON.parse(sessionStorage.getItem("BUNDLEDATA"));
+    var transunionBorrowerName = bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.BorrowerName[0].Name.first
     let Navigate = useNavigate()
 
     const logout = () => {
@@ -16,29 +18,7 @@ const Header = (props) => {
     return (
         <>
             <section className='selectdipute_header p-0'>
-                {/* <Container fluid>
-                    <Row>
-                        <Col lg={4}>
-                            <div>
-                                <Link to="/creditItem" className=''><img src={logo} className="headerlogo" /></Link>
-                            </div>
-
-                        </Col>
-                        <Col lg={4}>
-                            <div className='dispute_heading'>
-                                {props.title}
-                            </div>
-
-                        </Col>
-                        <Col lg={4}>
-                            <div className='dispute_user'>
-                                < FaUserCircle />
-                            </div>
-                        </Col>
-                    </Row>
-                </Container> */}
-
-
+              
                 <Navbar bg="light" expand="lg" sticky="top" className='navbarcontainer'>
                     <Container fluid>
                         <Navbar.Brand href="#">  <div className='navbarBrand'>
@@ -59,9 +39,8 @@ const Header = (props) => {
                             </Nav>
                             <Form className="d-flex">
                                 <NavDropdown id="dropdown" className='profileDropdown' title={<FaUserCircle className='usericon' />}  >
-                                    <NavDropdown.Item >Hi  </NavDropdown.Item>
+                                    <NavDropdown.Item >Hi {transunionBorrowerName}  </NavDropdown.Item>
                                     <NavDropdown.Item><Link to="/myaccount" className='navmenu'>My Account</Link></NavDropdown.Item>
-                                    <NavDropdown.Item><Link to="#" className='navmenu'>FAQ</Link></NavDropdown.Item>
                                     <NavDropdown.Divider />
                                     <NavDropdown.Item href="#action/3.4" onClick={logout}>Sign Out</NavDropdown.Item>
                                 </NavDropdown>

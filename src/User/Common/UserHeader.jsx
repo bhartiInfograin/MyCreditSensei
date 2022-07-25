@@ -38,7 +38,6 @@ export default function UserHeader() {
                             <NavDropdown id="dropdown" className='profileDropdown' title={ <FaUserCircle className='usericon' />}  >
                                 <NavDropdown.Item >Hi  {transunionBorrowerName}</NavDropdown.Item>
                                 <NavDropdown.Item><Link to="/myaccount" className='navmenu'>My Account</Link></NavDropdown.Item>
-                                <NavDropdown.Item><Link to="#" className='navmenu'>FAQ</Link></NavDropdown.Item>
                                 <NavDropdown.Divider />
                                 <NavDropdown.Item href="#action/3.4" onClick={logout}>Sign Out</NavDropdown.Item>
                             </NavDropdown>

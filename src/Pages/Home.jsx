@@ -14,9 +14,9 @@ import { Link } from 'react-router-dom'
 
 export default function Home() {
 
-    
-    
-  
+
+
+
 
     return (
         <>
@@ -40,12 +40,13 @@ export default function Home() {
                         </Col>
                         <Col lg={6} md={6} >
                             <div className='aboutus_text'>
-                                {/* <h5>About us</h5> */}
-                                {/* <div className='bb1'></div>
-                                <div className='bb2'></div> */}
-                                <h2>We Help Clients To Get Success</h2>
-                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis officia temporibus ut consequuntur, illum cum porro. Illo amet quaerat voluptatum ipsam. Ipsa nihil dicta rem impedit corporis explicabo. Similique, laborum.<br />Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quaerat, doloremque unde nisi pariatur quasi dolores odit, reprehenderit magnam dicta rerum totam facere nulla ipsam laboriosam vero placeat! Tempore, veniam odio?</p>
-                            
+                                <h2>No need to hire a credit repair company</h2>
+                                <p>Don’t waste your time and money hiring a credit repair company to send generic disputes the 3 credit bureaus can legally reject.</p>
+
+                                <p>  MyCredit Sensei helps you create far more effective disputes than any credit repair company. Because you send them yourself, the credit bureaus won't reject them.</p>
+
+                                <p> Easily create effective disputes for all 3 credit bureaus and improve your credit score with MyCredit Sensei.</p>
+
                             </div>
 
                         </Col>
@@ -62,7 +63,7 @@ export default function Home() {
                         <Col lg={12} md={12}>
                             <div className='modul_header'>
                                 <h4 className='modul_title'>Dispute any account on all 3 bureaus</h4>
-                                <p className='modul_text'>My Credit Sensei can help you delete these accounts from Experian, Equifax, and TransUnion:</p>
+                                <p className='modul_text'>My Credit Sensei can help you delete these accounts from Experian, Equifax, and Transunion:</p>
                             </div>
                         </Col>
                     </Row>
@@ -87,6 +88,8 @@ export default function Home() {
             </section>
             <ContactUs />
             <Footer />
+
+
         </>
     )
 }

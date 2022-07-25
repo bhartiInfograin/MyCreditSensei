@@ -24,8 +24,8 @@ export default function Footer() {
                         <div className="footercol2 p-3">
                             <h1 className='companyHeading mt-3'>Company</h1>
                             <p><FaCalendarDay  className='m-2 '/>Mon - Fri 9am to 5pm PST</p>
-                            <p><FaEnvelopeOpen  className='m-2'/>support@creditsensei.com</p>
-                            <p><FaPhoneAlt  className='m-2'/>(222) 999 - 3333</p> 
+                            <p><FaEnvelopeOpen  className='m-2'/><a className='footerLink' href='mailto:support@creditsensei.com'>support@creditsensei.com</a></p>
+                            <p><FaPhoneAlt  className='m-2'/><a  className="footerLink" href='tel:+(832)270-4968'>+(832)270-4968 </a></p> 
                         </div>
                     </Col>
                     <Col lg={4} md={4} className='p-3'>
@@ -53,7 +53,7 @@ export default function Footer() {
                         <ul className='socialtext'>
                             <li>Terms Of Use</li>
                             <li>Privacy Policy</li>
-                            <li>© 2020 Credit Versio, All rights reserved.</li>
+                            <li>© 2020 MY CREDIT SENSEI, All rights reserved.</li>
                         </ul>
                     </Col>
                 </Row>

@@ -10,8 +10,8 @@ import publicIp from "public-ip";
 import $ from 'jquery';
 import { ToastContainer, toast } from 'react-toastify';
 import { ImSpinner9 } from 'react-icons/im';
-
-
+import {FaCheckCircle } from 'react-icons/fa';
+import{COMPLETE,CREDIT_CARD} from '../../Url'
 
 
 
@@ -79,7 +79,7 @@ const PaymentDetails = () => {
     //********************** Creditcard validation api *************************//
     useEffect(() => {
         if (cardNumber.length === 16) {
-            axios.get(`https://stage-sc.consumerdirect.com/api/signup/validate/credit-card-number?clientKey=${form_data.clientKey}&number=${cardNumber}&trackingToken=${form_data.trackingToken}`)
+            axios.get(`https://www.smartcredit.com/api/signup/validate/credit-card-number?clientKey=${form_data.clientKey}&number=${cardNumber}&trackingToken=${form_data.trackingToken}`)
                 .then(resp => {
                     // console.log("resp.data", resp.data)
                     setCreditCardToken(resp.data)
@@ -137,7 +137,7 @@ const PaymentDetails = () => {
         setLoading(true)
         $.ajax({
             type: "POST",
-            url: 'https://stage-sc.consumerdirect.com/api/signup/complete',
+            url: COMPLETE,
             data: data,
             success: function (response) {
 
@@ -266,7 +266,7 @@ const PaymentDetails = () => {
 
                 $.ajax({
                     type: "POST",
-                    url: 'https://stage-sc.consumerdirect.com/api/signup/customer/update/credit-card',
+                    url: CREDIT_CARD,
                     data: article,
                     success: function (response) {
 
@@ -332,25 +332,18 @@ const PaymentDetails = () => {
                     isConfirmedTerms: true,
                 }
 
-                console.log("article", article)
-
-
+          
                 $.ajax({
                     type: "POST",
-                    url: 'https://stage-sc.consumerdirect.com/api/signup/customer/update/credit-card',
+                    url: CREDIT_CARD,
                     data: article,
                     success: function (response) {
                         complete();
-                        console.log("response", response)
-
-
                     },
                     error: function (error) {
-                        console.log("errordfdf", error.responseJSON.errors[0].code);
                         if (error.responseJSON.errors[0].code === 'EXPIRED_EXPIRATION') {
                             alert("The expiration date has expired")
                         }
-
                         if (error.responseJSON.errors[0].code === 'CVV_REQUIRED') {
                             return toast.error('CVV is required', {
                                 position: "top-right",
@@ -365,7 +358,6 @@ const PaymentDetails = () => {
                         }
 
                         if (error.responseJSON.errors[0].code === 'EXPIRED_EXPIRATION')
-
                             return toast.error('The expiration date has expired', {
                                 position: "top-right",
                                 autoClose: 5000,
@@ -376,10 +368,6 @@ const PaymentDetails = () => {
                                 progress: undefined,
                                 theme: "colored"
                             });
-
-
-
-
                     }
                 });
             }
@@ -642,7 +630,7 @@ const PaymentDetails = () => {
 
                             </Col>
                             <Col lg={5} md={5} sm={12}>
-                                <div className="membership-table">
+                                {/* <div className="membership-table">
                                     <div className="heading">
                                         <p>BASIC MEMBERSHIP</p>
                                     </div>
@@ -701,76 +689,35 @@ const PaymentDetails = () => {
 
                                             </tr>
                                             <tr>
-                                                <td>Monthly fee starting on 03/03/2022</td>
-                                                <td className='payment-price'>$25.00</td>
+                                                <td>Monthly fee starting</td>
+                                                <td className='payment-price'>39$</td>
 
                                             </tr>
                                         </tbody>
                                     </Table>
-                                    <div className="heading">
-                                        <p>PREMIUM MEMBERSHIP</p>
+                                </div> */}
+
+
+                                <div className='basiccard d-flex justify-content-center'>
+                                    <div className='pricing_plan' >
+                                        <h5>SmartCredit  PLAN</h5>
+                                        <hr></hr>
+                                        <div className='subprice'>
+                                            <p className='price'> $39 /mo</p>
+                                            <p className='cancleText'>CANCEL ANY TIME</p>
+                                        </div>
+                                        <hr></hr>
+                                        <ul className='p-0'>
+                                            <li><FaCheckCircle className='checkicon' />Unlimited My Credit Sensei Disputes</li>
+                                            <li> <FaCheckCircle className='checkicon' />Monthly 3 Bureaus  Reports & Scores</li>
+                                        </ul>
+                                        <h5>SmartCredit</h5>
+                                        <ul className='p-0'>
+                                            <li> <FaCheckCircle className='checkicon' />Identity Theft Insurance ($1m)</li>
+                                            <li><FaCheckCircle className='checkicon' />Credit Monitoring & Alerts (TU)</li>
+                                        </ul>
+                                        <p className='text-center cardtext'>Includes SmartCredit Money Manager with 2 monthly Transunion Report &  Score updates in SmartCredit.</p>
                                     </div>
-                                    <Table striped bordered hover>
-                                        <thead>
-                                            <tr>
-                                                <td>Smart Credit Report & Scores</td>
-                                                <td>Unlimited</td>
-
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>ScoreTraker</td>
-                                                <td>Unlimited</td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>ScoreBuilder</td>
-                                                <td>Unlimited</td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>ScoreMaster</td>
-                                                <td>Unlimited</td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>Actions</td>
-                                                <td>5 per month</td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>Credit Monitering</td>
-                                                <td>Unlimited</td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>Money Manager</td>
-                                                <td>Unlimited</td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>3B Report & Scores</td>
-                                                <td>1 per month</td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>Subscription Start Date</td>
-                                                <td>03/03/2022</td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>Trial Period</td>
-                                                <td>--</td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>Monthly fee starting on 03/03/2022</td>
-                                                <td className='payment-price'>$35.00</td>
-
-                                            </tr>
-                                        </tbody>
-                                    </Table>
                                 </div>
                             </Col>
                         </Row>

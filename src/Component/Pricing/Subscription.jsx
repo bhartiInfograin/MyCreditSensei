@@ -32,7 +32,7 @@ export default function Subscription() {
               </div>
               <hr></hr>
               <ul className='p-0'>
-                <li><FaCheckCircle className='checkicon'/>Unlimited Credit Sensei Disputes</li>
+                <li><FaCheckCircle className='checkicon'/>Unlimited My Credit Sensei Disputes</li>
                 <li> <FaCheckCircle  className='checkicon'/>Monthly 3 Bureaus  Reports & Scores</li>
               </ul>
               <h5>SmartCredit</h5>

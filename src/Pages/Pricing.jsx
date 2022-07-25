@@ -26,7 +26,7 @@ export default function Pricing() {
             <Col lg={6} md={6}>
            
                 <div className='pricing_content'>
-                  <h3>Repair all 3 Credit bureaus. Increase your Credit Score.Easily do it yourself</h3>
+                  <h3>The most powerful credit repair software ever created, is free.</h3>
                   <p>Only pay for a 3 credit bureau subscription and
                     postage for your dispute letters.</p>
                 </div>

@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import UserHeader from '../Common/UserHeader';
 import { Container, Row, Col, Table, Modal } from 'react-bootstrap';
 import { FaArrowRight } from 'react-icons/fa';
-import Footer from '../../Common/Footer';
 import Graph from './Graph';
 import { Link } from 'react-router-dom';
 import { FaCheckCircle } from 'react-icons/fa';
 import axios from 'axios';
-import { CREDIT_SCORE,GET_DOC } from '../../Url';
-
+import { CREDIT_SCORE, GET_DOC } from '../../Url';
+import UserFooter from '../Common/UserFooter';
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function UserHome() {
   const summary = JSON.parse(sessionStorage.getItem("SUMMARY"));
@@ -19,6 +19,7 @@ export default function UserHome() {
   const trackingToken = (sessionStorage.getItem("TRACKINGTOKEN"));
   const [uploadDateAdd, setUploadDateAdd] = useState()
   const [uploadDateId, setUploadDateId] = useState()
+  let Navigate = useNavigate()
   //  =====plan purchase popup start=======
   const [show, setShow] = useState();
   //  =====plan purchase popup end=======
@@ -33,15 +34,23 @@ export default function UserHome() {
   const state = bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.BorrowerAddress[0].CreditAddress.stateCode;
   const zip = bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.BorrowerAddress[0].CreditAddress.postalCode;
   //==================== user details end===========================
+
   //====================== check subcription======================
   useEffect(() => {
     axios.get(`https://www.mycreditsensei.com:5000/getDueDate?trackingToken=${trackingToken}`)
       .then((response) => {
-        const _dueDate = response.data.statusMsg
-        var duedate = new Date(_dueDate * 1000);
-        var currendate = new Date();
-        if (duedate >= currendate) {
-          setShow(false)
+        if (response.data.statusMsg === "Invalid tracking token") {
+          Navigate('/login')
+        }
+        if (response.data.statusCode === 200) {
+          const _dueDate = response.data.statusMsg.endDate
+          var duedate = new Date(_dueDate * 1000);
+          var currendate = new Date();
+          if (duedate >= currendate) {
+            setShow(false)
+          } else {
+            setShow(true)
+          }
         } else {
           setShow(true)
         }
@@ -51,39 +60,39 @@ export default function UserHome() {
       })
   }, [])
   //====================== check subcription end======================
-    //******************* */ get add on address date  *********************************
-    useEffect(() => {
-      const article = {
-          trackingToken: trackingToken,
-          doc_type: "addressproof"
-      }
-      axios.post(GET_DOC, article)
-          .then((data) => {
-              if (data.data.statusCode === 200) {
-                  setUploadDateAdd(true)
-              }
-          })
-          .catch((error) => {
-              console.log("error", error)
-          })
-  },[uploadDateAdd])
+  //******************* */ get add on address date  *********************************
+  useEffect(() => {
+    const article = {
+      trackingToken: trackingToken,
+      doc_type: "addressproof"
+    }
+    axios.post(GET_DOC, article)
+      .then((data) => {
+        if (data.data.statusCode === 200) {
+          setUploadDateAdd(true)
+        }
+      })
+      .catch((error) => {
+        console.log("error", error)
+      })
+  }, [uploadDateAdd])
 
   //******************* */ get add on id date  *********************************
   useEffect(() => {
-      const article = {
-          trackingToken: trackingToken,
-          doc_type: "idproof"
-      }
-      axios.post(GET_DOC, article)
-          .then((data) => {
-              if (data.data.statusCode === 200) {
-                  setUploadDateId(true)
-              }
-          })
-          .catch((error) => {
-              console.log("error", error)
-          })
-  },[uploadDateId])
+    const article = {
+      trackingToken: trackingToken,
+      doc_type: "idproof"
+    }
+    axios.post(GET_DOC, article)
+      .then((data) => {
+        if (data.data.statusCode === 200) {
+          setUploadDateId(true)
+        }
+      })
+      .catch((error) => {
+        console.log("error", error)
+      })
+  }, [uploadDateId])
 
 
 
@@ -91,30 +100,26 @@ export default function UserHome() {
 
 
   //====================save score in database =======================
-  useEffect(() => {
+  useEffect(async() => {
     const article = {
       "trackingToken": trackingToken,
       "transunion_credit_score": trans,
       "experian_credit_score": expri,
       "equifax_credit_score": equ
     }
-    const data = axios.post(CREDIT_SCORE, article)
-      .then((res) => {
-      })
-      .catch((err) => {
-        console.log("error", err)
-      })
+    const {data} = await axios.post(CREDIT_SCORE, article)
   })
   //====================save score in database =============================
   //=================== to get subscription (payment getway)================
   const handleSubscription = async () => {
     const data = await axios.post("https://www.mycreditsensei.com:5000/subcription")
+   
       .then((res) => {
         if (res.data.data.id) {
           var options = {
             key: "rzp_test_FRwpmu0LJEnAkl",
             "subscription_id": res.data.data.id,
-            "description": "Monthly credit sensei  Plan",
+            "description": "Monthly My credit sensei  Plan",
             "handler": async (response) => {
               setShow(false)
               const article = {
@@ -122,11 +127,25 @@ export default function UserHome() {
                 "razorpay_payment_id": response.razorpay_payment_id,
                 "razorpay_signature": response.razorpay_signature,
                 "trackingToken": trackingToken,
-                "endDate": res.data.data.end_at
+                "endDate": res.data.data.end_at,
+                "startDate": res.data.data.created_at
               }
               try {
                 const verifyUrl = "https://www.mycreditsensei.com:5000/verify";
                 const { data } = await axios.post(verifyUrl, article);
+                if (data.statusCode === 200) {
+                  toast.success("Payment successfully Done ", {
+                    position: "top-center",
+                    autoClose: 5000, 
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored"
+                });
+                }
+
               } catch (error) {
                 console.log("error", error)
               }
@@ -137,13 +156,25 @@ export default function UserHome() {
           };
           var paymentObject = new window.Razorpay(options);
           paymentObject.on('payment.failed', function (response) {
-            alert(response.error.code);
-            alert(response.error.description);
-            alert(response.error.source);
-            alert(response.error.step);
-            alert(response.error.reason);
-            alert(response.error.metadata.order_id);
-            alert(response.error.metadata.payment_id);
+
+            toast.error("Payment failed ", {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored"
+          });
+
+            // alert(response.error.code);
+            // alert(response.error.description);
+            // alert(response.error.source);
+            // alert(response.error.step);
+            // alert(response.error.reason);
+            // alert(response.error.metadata.order_id);
+            // alert(response.error.metadata.payment_id);
             setShow(false)
           });
           paymentObject.open()
@@ -160,15 +191,7 @@ export default function UserHome() {
 
   return (
     <>
-      <section className='useHome_header'>
-        <Container fluid>
-          <Row>
-            <Col lg={12} md={12}>
-              <div>Link your 3 Bureau Credit Report & Scores</div>
-            </Col>
-          </Row>
-        </Container>
-      </section>
+
       <UserHeader />
       <Graph />
       <Container className='mb-5'>
@@ -238,7 +261,7 @@ export default function UserHome() {
                       <td>{summary.TradelineSummary.Equifax.DerogatoryAccounts}</td>
                     </tr>
                     <tr>
-                      <th scope="row">Balances </th>
+                      <th scope="row">Balance </th>
                       <td>{summary.TradelineSummary.TransUnion.TotalBalances}</td>
                       <td>{summary.TradelineSummary.Experian.TotalBalances}</td>
                       <td>{summary.TradelineSummary.Equifax.TotalBalances}</td>
@@ -306,7 +329,6 @@ export default function UserHome() {
 
               <div className="personal_info">
                 <div className="user_name">{firstName + " " + lastName}</div>
-                {/* <div className="user_email">user@gmail.com</div> */}
                 <div className="user_address">{houseNumber + "  " + streetName + "  " + streetType}<br></br>{city + "," + state + " " + zip}</div>
               </div>
 
@@ -315,25 +337,26 @@ export default function UserHome() {
 
               <div className="proof_info">
                 {uploadDateId ?
-                  <div className="proof_photo">Photo ID <FaCheckCircle className='checkicon_gray' style={{color:"green"}} /> <span><Link to="#">Added</Link></span></div>
-                 :
-                 <div className="proof_photo">Photo ID <FaCheckCircle className='checkicon_gray' /> <span><Link to="/myaccount">Add It</Link></span></div>
-                 }
-            
-
-                {uploadDateAdd ? 
-                  <div className="proof_address mt-3">Proof of address <FaCheckCircle className='checkicon_gray'  style={{color:"green"}}/> <span><Link to="#">Added</Link></span></div>
-                :
-                <div className="proof_address mt-3">Proof of address <FaCheckCircle className='checkicon_gray' /> <span><Link to="/myaccount">Add It</Link></span></div>
+                  <div className="proof_photo">Photo ID <FaCheckCircle className='checkicon_gray' style={{ color: "green" }} /> <span><Link to="#">Added</Link></span></div>
+                  :
+                  <div className="proof_photo">Photo ID <FaCheckCircle className='checkicon_gray' /> <span><Link to="/myaccount">Add It</Link></span></div>
                 }
-              
+
+
+                {uploadDateAdd ?
+                  <div className="proof_address mt-3">Proof of address <FaCheckCircle className='checkicon_gray' style={{ color: "green" }} /> <span><Link to="#">Added</Link></span></div>
+                  :
+                  <div className="proof_address mt-3">Proof of address <FaCheckCircle className='checkicon_gray' /> <span><Link to="/myaccount">Add It</Link></span></div>
+                }
+
               </div>
 
             </Col>
           </Row>
         </Container>
       </section>
-      <Footer />
+      {/* <Footer /> */}
+      <UserFooter />
       {/* =====plan purchase popup start======= */}
       <Modal show={show} backdrop="static" keyboard={false} className="purchase_plan" centered>
         <Modal.Body>
@@ -350,7 +373,7 @@ export default function UserHome() {
                     </div>
                     <hr></hr>
                     <ul className='p-0'>
-                      <li><FaCheckCircle className='checkicon' />Unlimited Credit Sensei Disputes</li>
+                      <li><FaCheckCircle className='checkicon' />Unlimited My Credit Sensei Disputes</li>
                       <li> <FaCheckCircle className='checkicon' />Monthly 3 Bureaus  Reports & Scores</li>
                     </ul>
                     <h5>SmartCredit</h5>
@@ -372,6 +395,19 @@ export default function UserHome() {
 
       </Modal>
       {/* =====plan purchase popup end======= */}
+
+
+      <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
     </>
   )
 }

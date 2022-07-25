@@ -25,7 +25,7 @@ export default function SecurityQuestin() {
         try {
             $("#loader").show();
             $("#question").hide();
-            await axios.get(`https://stage-sc.consumerdirect.com/api/signup/id-verification?clientKey=${form_data.clientKey}&trackingToken=${form_data.trackingToken}&customerToken=${form_data.customerToken}`)
+            await axios.get(`https://www.smartcredit.com/api/signup/id-verification?clientKey=${form_data.clientKey}&trackingToken=${form_data.trackingToken}&customerToken=${form_data.customerToken}`)
                 .then(resp => {
                     var a = resp.data.idVerificationCriteria
                     sessionStorage.setItem("securityquestion", JSON.stringify(a))
@@ -89,7 +89,6 @@ export default function SecurityQuestin() {
             url: ID_VERIFICATION,
             data: article,
             success: function (response) {
-
                 console.log("response", response)
                 if (response) {
                     Navigate("/paymentdetails")

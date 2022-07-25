@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
-import logo from '../../asset/image/newlogo.png';
 import { Link, useNavigate } from 'react-router-dom'
 import { Container, Row, Col, Accordion, Table, Button, Modal, Form } from 'react-bootstrap'
-import { FaUserCircle, FaSlidersH, FaPlusSquare } from 'react-icons/fa';
+import { FaSlidersH, FaPlusSquare } from 'react-icons/fa';
 import $ from 'jquery';
 import { ToastContainer, toast } from 'react-toastify';
 import DisputeStepper from "../DisputeLetter/DisputeStepper"
@@ -10,14 +9,16 @@ import jsPDF from 'jspdf';
 import axios from 'axios';
 import { TRANSUNION_DISPUTE_LETTER } from "../../Url";
 import Header from './Header'
-
+import UserFooter from '../Common/UserFooter';
 
 
 export default function SelectDisputeAC() {
     const bundledata = JSON.parse(sessionStorage.getItem("BUNDLEDATA"));
     const TrackingToken = sessionStorage.getItem("TRACKINGTOKEN");
     const [count, setCount] = useState(0);
+    const [inquiryCount, setInquiryCount] = useState(0);
     const [show, setShow] = useState(false);
+    const [showInquire, setShowInquire] = useState(false);
     const [showDispute, setShowDispute] = useState(false);
     const [custom, setCustom] = useState(false)
     const [never, setNever] = useState(false)
@@ -37,18 +38,21 @@ export default function SelectDisputeAC() {
     const [accountType, setAccountType] = useState()
     const [openDate, setOpenDate] = useState()
     const [accountNumber, setAccountNumber] = useState()
-    const [finish, setFinish] = useState(false)
-    const [progress, setProgress] = useState()
-    let Navigate = useNavigate()
+    const [selectReason, setSelectReason] = useState(false)
+    const [subscriberName, setSubscriberName] = useState();
+    const [industryCode, setIndustryCode] = useState();
+    const [individualName, setIndividualName] = useState();
+    const [inquiryDate, setInquiryDate] = useState();
+    const [disputeReasonError, setDisputeReasonError] = useState(false);
 
+    let Navigate = useNavigate()
     var socialSecurityNumber = bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.SocialSecurityNumber
     var transunionBorrowerName = bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.BorrowerName[0].Name.first + " " + bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.BorrowerName[0].Name.last
     var transunionBorrowerAddress = bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.BorrowerAddress[0].CreditAddress
-    var transunionBorrowerBirthdate = bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.Birth[0].date
     var tradeLinePartition = bundledata.BundleComponent[6].TrueLinkCreditReportType.TradeLinePartition
     var InquiryPartition = bundledata.BundleComponent[6].TrueLinkCreditReportType.InquiryPartition
-    var d = new Date()
-    var fulldate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear()
+    var d = new Date().toLocaleDateString()
+    var fulldate = d;
 
 
     //******************/ all *****************************//
@@ -67,7 +71,7 @@ export default function SelectDisputeAC() {
         tradeLinePartition.map((e) => {
             if (e.Tradeline.length > 0) {
                 e.Tradeline.map(item => {
-                    if (item.bureau === 'TransUnion') {
+                    if (item.bureau === 'TransUnion' && item.GrantedTrade !== undefined) {
                         transUnion.push(item)
                     }
 
@@ -102,14 +106,24 @@ export default function SelectDisputeAC() {
     }
 
 
-
     const handleCheckCount = (e) => {
+        console.log("e", e.target)
         const { checked } = e.target;
         if (checked === true) {
             setCount(count + 1)
-            console.log(count)
         } else {
             setCount(count - 1)
+        }
+
+    }
+
+    const handleInquiryCheckCount = (e) => {
+        const { checked } = e.target;
+        if (checked === true) {
+
+            setInquiryCount(inquiryCount + 1)
+        } else {
+            setInquiryCount(inquiryCount - 1)
         }
 
     }
@@ -117,73 +131,142 @@ export default function SelectDisputeAC() {
 
     useEffect(() => {
         $(".disputeReason").css("visibility", "hidden");
+        $(".disputeReason1").css("visibility", "hidden");
     }, [])
+
+
 
     const handleDisputeReason = (e) => {
         const check = document.getElementsByClassName("mycheckbox")
+
         for (let i = 0; i < check.length; i++) {
             if (check[i].checked === true) {
-                document.getElementsByClassName("disputeReason")[i].style.visibility = "visible"
+
+                document.getElementsByClassName("disputeReason")[i].style.visibility = "visible";
+
             }
         }
         setShowDispute(true)
-        setProgress(1)
+
     }
 
+
+    const handleInquiryDisputeReason = () => {
+        const check1 = document.getElementsByClassName("mycheckbox1")
+        for (let i = 0; i < check1.length; i++) {
+            if (check1[i].checked === true) {
+                document.getElementsByClassName("disputeReason1")[i].style.visibility = "visible";
+            }
+        }
+        setShowDispute(true)
+
+    }
+
+
+
     const first = useRef(null)
-
     useEffect(() => {
-
         first.current = handleClose;
-        var letterObject = []
+        var letterObject = [];
+        var inquiryObject = [];
 
         function handleClose() {
-            setShow(false);
-            setFinish(true);
-            setProgress(2)
+            var valuedfdf = JSON.parse(sessionStorage.getItem("DisputebtnValue"));
+            var inquiryValue = JSON.parse(sessionStorage.getItem("InquiryDisputebtnValue"));
 
+            if (valuedfdf) {
+                document.getElementsByClassName("disputeReason")[valuedfdf].style.visibility = "hidden";
+                document.getElementsByClassName("mycheckbox")[valuedfdf].checked = false
+            }
+
+            if (inquiryValue) {
+                document.getElementsByClassName("disputeReason1")[inquiryValue].style.visibility = "hidden";
+                document.getElementsByClassName("mycheckbox1")[inquiryValue].checked = false
+            }
+
+            const inquiryReason = document.getElementById("inquiryReason");
+            const modalsubscriberName = document.getElementsByClassName("modalsubscriberName")[0];
+            const modalindustryCode = document.getElementsByClassName("modalindustryCode")[0];
+            const modalinquiryDate = document.getElementsByClassName("modalinquiryDate")[0];
+
+        
             const customReason = document.getElementById("customReason")
-            const modalaccountName = document.getElementsByClassName("modalaccountName")[0].innerText
-            const modalaccountType = document.getElementsByClassName("modalaccountType")[0].innerText
-            const modalaccountNumber = document.getElementsByClassName("modalaccountNumber")[0].innerText
-            const modalOpenDate = document.getElementsByClassName("modalOpenDate")[0].innerText
-            const modalhighbalance = document.getElementsByClassName("modalBalance")[0].innerText
-            const detailsReasons = document.getElementsByClassName("detailsReasons")[0].innerText
+            const modalaccountName = document.getElementsByClassName("modalaccountName")[0]
+            const modalaccountType = document.getElementsByClassName("modalaccountType")[0]
+            const modalaccountNumber = document.getElementsByClassName("modalaccountNumber")[0]
+            const modalOpenDate = document.getElementsByClassName("modalOpenDate")[0]
+            const modalhighbalance = document.getElementsByClassName("modalBalance")[0]
+            const detailsReasons = document.getElementsByClassName("detailsReasons")[0]
             var reasons = ''
 
-            if (customReason) {
-                reasons = customReason.value
-            }
-            if (detailsReasons) {
-                reasons = detailsReasons
-            }
-            const NewObject = {
-                "acName": modalaccountName,
-                "actype": modalaccountType,
-                "acNumber": modalaccountNumber,
-                "openDate": modalOpenDate,
-                "balance": modalhighbalance,
-                "reasons": reasons
+
+
+            if (detailsReasons === undefined && customReason === null) {
+                setDisputeReasonError(true);
+
+            } else {
+                if (modalaccountName && modalaccountType && modalaccountNumber && modalOpenDate && modalhighbalance) {
+                    if (customReason) {
+                        reasons = customReason.value
+                    }
+                    if (detailsReasons) {
+                        reasons = detailsReasons.innerText
+                    }
+                    var NewObject = {
+                        "acName": modalaccountName.innerText,
+                        "actype": modalaccountType.innerText,
+                        "acNumber": modalaccountNumber.innerText,
+                        "openDate": modalOpenDate.innerText,
+                        "balance": modalhighbalance.innerText,
+                        "reasons": reasons
+                    }
+                }
+                if (NewObject) {
+                    letterObject.push(NewObject)
+                    sessionStorage.setItem("LetterObject", JSON.stringify(letterObject))
+                    setShow(false);
+                }
             }
 
-            letterObject.push(NewObject)
-            sessionStorage.setItem("LetterObject", JSON.stringify(letterObject))
+            if (inquiryReason) {
+                if (inquiryReason.value) {
+
+                    var NewObject_inquiry = {
+                        "inquiryReason": inquiryReason.value,
+                        "subscriberName": modalsubscriberName.innerText,
+                        "industryCode": modalindustryCode.innerText,
+                        "inquiryDate": modalinquiryDate.innerText
+                    }
+
+                    if (NewObject_inquiry) {
+                        inquiryObject.push(NewObject_inquiry)
+                        sessionStorage.setItem("InquiryObject", JSON.stringify(inquiryObject))
+                        setShowInquire(false);
+
+                    }
+                } else {
+                    console.log("inquiryReasond elsssss", inquiryReason.value)
+                    setDisputeReasonError(true);
+                }
+            }
         }
     }, [])
-
 
 
 
     const handleClose1 = () => {
+
         setShow(false);
+        setShowInquire(false);
     }
 
 
-
     const handleShow = (e) => {
+        var dispute_btn = e.target;
         setShow(true)
         $("#content").show()
         var button_value = document.getElementsByClassName("disputeReason")
+
         for (let i = 0; i < button_value.length; i++) {
             button_value[i].setAttribute("myVal", `${i}`)
         }
@@ -197,108 +280,30 @@ export default function SelectDisputeAC() {
         setAccountType(document.getElementsByClassName("accountType")[e.target.attributes.myVal.nodeValue].innerText)
         setOpenDate(document.getElementsByClassName("openDate")[e.target.attributes.myVal.nodeValue].innerText)
         setAccountNumber(document.getElementsByClassName("accountNumber")[e.target.attributes.myVal.nodeValue].innerText)
+
+        var dispute_btn_value = dispute_btn.getAttribute("myval");
+        if (dispute_btn_value) {
+            sessionStorage.setItem("DisputebtnValue", JSON.stringify(dispute_btn_value))
+        }
+
     }
 
-
-
-
-    const sendEmail = () => {
-        var mailbody = []
-        const LetterObject = JSON.parse(sessionStorage.getItem("LetterObject"));
-
-        if (LetterObject) {
-            LetterObject.map((e) => {
-                console.log(e.reasons)
-                var g = `${e.actype}<span style="visibility:hidden">1</span>${e.acName} with account ${e.acNumber} opended on ${e.openDate} and a balance of ${e.balance} .</br>${e.reasons}`
-                mailbody.push(g)
-            })
-
-            var doc = new jsPDF("p", "pt", "a4");
-            doc.html(` 
-            <div id="content">
-           <div id='userdetails'>
-               <div id="useraddress">
-                   <p id="username">${transunionBorrowerName}</p>
-                   <p>${transunionBorrowerAddress.houseNumber + " " + transunionBorrowerAddress.streetName}</p>
-                   <p>${transunionBorrowerAddress.city + "," + transunionBorrowerAddress.stateCode + " " + transunionBorrowerAddress.postalCode}</p>
-                   <p> SSN : ${socialSecurityNumber}</p>
-                   <p>Date of Birth : ${transunionBorrowerBirthdate}</p>
-               </div>
-               <div>
-                   ${fulldate}
-               </div>
-           </div>
-
-           <div id='burus_address'>
-               <p>TransUnioun Consumer Solutions </p>
-               <p>P.O.Box 2000</p>
-               <p>Chester,PA 19016</p>
-           </div>
-           <div id="letterbody">
-               <p>Dear Transunion,</p>
-               <p>I am writing to dispute the following information that appears on my Transunion report  from ${fulldate}:</p>
-              ${mailbody.map((e) => {
-                return (
-                    `<div style="text-align:justify">
-                        <p>${e}</p>
-                    </div>
-                   `
-                )
-            })}
-
-           </div>
-           <div id='letterfooter'>
-               <p>Sincerely,</p>
-               <p>${transunionBorrowerName}</p>
-           </div>
-       </div>`, {
-                callback: function (pdf) {
-                    var demo = pdf.output("datauristring");
-                    pdf.save("transunion.pdf")
-
-                    var disputedate = new Date()
-                    var _disputeDate = disputedate.getDate() + "/" + (disputedate.getMonth() + 1) + "/" + disputedate.getFullYear()
-
-                    const article = {
-                        trackingToken: TrackingToken,
-                        transunion_create_date: _disputeDate,
-                        transunion_pdf: demo
-                    };
-
-                    axios.post(TRANSUNION_DISPUTE_LETTER, article)
-                        .then((response) => {
-
-                            if (response.data.statusCode === 400) {
-                                toast.error('Dispute letter already sent', {
-                                    position: "top-center",
-                                    autoClose: 5000,
-                                    hideProgressBar: true,
-                                    closeOnClick: true,
-                                    pauseOnHover: true,
-                                    draggable: true,
-                                    progress: undefined,
-                                    theme: "colored"
-                                });
-
-                                // Navigate("/useHome")
-
-                            }
-                            if (response.data.statusCode === 200) {
-                                Navigate("/transunionRound_1")
-                            }
-                        })
-                        .catch((err) => {
-                            console.log(err)
-                        })
-                }
-            })
+    const handleShowInquire = (e) => {
+        var dispute_btn = e.target;
+        setShowInquire(true)
+        setSubscriberName(document.getElementsByClassName("subscriberName")[e.target.attributes.id.nodeValue].innerText)
+        setIndustryCode(document.getElementsByClassName("industryCode")[e.target.attributes.id.nodeValue].innerText)
+        setIndividualName(document.getElementsByClassName("individualName")[e.target.attributes.id.nodeValue].innerText)
+        setInquiryDate(document.getElementsByClassName("inquiryDate")[e.target.attributes.id.nodeValue].innerText)
+        var dispute_btn_value = dispute_btn.getAttribute("value");
+        if (dispute_btn_value) {
+            sessionStorage.setItem("InquiryDisputebtnValue", JSON.stringify(dispute_btn_value))
         }
     }
 
 
     const showcustom = (e) => {
         const suggestion = e.target.value
-        console.log("suggestion", suggestion);
         switch (suggestion) {
             case 'custom': setCustom(true);
                 setNever(false);
@@ -379,47 +384,273 @@ export default function SelectDisputeAC() {
 
 
 
+    const sendEmail = () => {
+        var mailbody = []
+        const LetterObject = JSON.parse(sessionStorage.getItem("LetterObject"));
+
+        if (LetterObject) {
+            LetterObject.map((e) => {
+
+                if (e.inquiryReason) {
+                    var g = `Inquiry of ${subscriberName}<span style="visibility:hidden">1</span>(${industryCode}) on the date of ${inquiryDate}.</br>${e.inquiryReason}`
+                }
+                if (e.actype) {
+                    var g = `${e.actype}<span style="visibility:hidden">1</span>${e.acName} with account ${e.acNumber} opended on ${e.openDate} and a balance of ${e.balance} .</br>${e.reasons}`
+                }
+
+                mailbody.push(g)
+            })
+
+            var doc = new jsPDF("p", "pt", "a4");
+            doc.html(` 
+            <div id="content">
+           <div id='userdetails'>
+               <div id="useraddress">
+                   <p id="username">${transunionBorrowerName}</p>
+                   <p>${transunionBorrowerAddress.houseNumber + " " + transunionBorrowerAddress.streetName}</p>
+                   <p>${transunionBorrowerAddress.city + "," + transunionBorrowerAddress.stateCode + " " + transunionBorrowerAddress.postalCode}</p>
+                   <p> SSN : ${socialSecurityNumber}</p>
+               </div>
+               <div>
+                   ${fulldate}
+               </div>
+           </div>
+
+           <div id='burus_address'>
+               <p>TransUnioun Consumer Solutions </p>
+               <p>P.O.Box 2000</p>
+               <p>Chester,PA 19016</p>
+           </div>
+
+           <div id="letterbody">
+               <p>Dear Transunion,</p>
+               <p>Re:Letter to Remove Inaccurate Credit Information
+               <p>I received a copy of my credit report and found the following item(s) to be in error:</p>
+              ${mailbody.map((e) => {
+                return (
+                    `<div style="text-align:justify">
+                        <p>${e}</p>
+                    </div>
+                   `
+                )
+            })}
+           <p style="text-align:justify">By the provisions of the Fair Credit Reporting Act, I demand that these items be investigated and removed from my report. It is my understating that you will recheck these items with the creditor who has posted them. Please remove any information that the creditor cannot verify. I understand that under 15 U.S.C. Sec. 1681i(a), you must complete this reinvestigation within 30 days of receipt of this letter.</p>
+
+           <p style="text-align:justify">Please send an updated copy of my credit report to the above address. According to the act, there shall be no charge for this updated report. I also request  that you please send notices of corrections to anyone who received my credit report in the past six months.</p>
+
+           <p>Thank you for your time and help in this matter.</p>
+
+           </div>
+           <div id='letterfooter'>
+               <p>Sincerely,</p>
+               <p>${transunionBorrowerName}</p>
+           </div>
+       </div>`, {
+                callback: function (pdf) {
+                    var demo = pdf.output("datauristring");
+                    pdf.save("transunion_account.pdf")
+
+                    var disputedate = new Date().toLocaleDateString()
+                    var _disputeDate = disputedate
+
+                    const article = {
+                        trackingToken: TrackingToken,
+                        transunion_create_date: _disputeDate,
+                        account_pdf :demo,
+                    };
+
+                    axios.post(TRANSUNION_DISPUTE_LETTER, article)
+                        .then((response) => {
+
+                            if (response.data.statusCode === 400) {
+                                toast.error('Dispute letter already sent', {
+                                    position: "top-center",
+                                    autoClose: 5000,
+                                    hideProgressBar: true,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                    theme: "colored"
+                                });
+
+                            }
+                            if (response.data.statusCode === 200) {
+                                // Navigate("/transunionRound_1")
+                                toast.success('Dispute letter Created successfully', {
+                                    position: "top-center",
+                                    autoClose: 5000,
+                                    hideProgressBar: true,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                    theme: "colored"
+                                });
+
+
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                        })
+                }
+            })
+        }
+    }
+
+
+    const sendInquiryEmail = () => {
+        var inquirymailbody = []
+        const InquiryObject = JSON.parse(sessionStorage.getItem("InquiryObject"));
+  
+        if (InquiryObject) {
+            InquiryObject.map((e) => {
+                if (e.inquiryReason) {
+                    var g = `Inquiry of ${e.subscriberName}<span style="visibility:hidden">1</span>(${e.industryCode}) on the date of ${e.inquiryDate}.</br>${e.inquiryReason}`
+                }
+                inquirymailbody.push(g)
+            })
+
+            var doc = new jsPDF("p", "pt", "a4");
+            doc.html(` 
+        <div id="content">
+       <div id='userdetails'>
+           <div id="useraddress">
+               <p id="username">${transunionBorrowerName}</p>
+               <p>${transunionBorrowerAddress.houseNumber + " " + transunionBorrowerAddress.streetName}</p>
+               <p>${transunionBorrowerAddress.city + "," + transunionBorrowerAddress.stateCode + " " + transunionBorrowerAddress.postalCode}</p>
+               <p> SSN : ${socialSecurityNumber}</p>
+           </div>
+           <div>
+               ${fulldate}
+           </div>
+       </div>
+
+       <div id='burus_address'>
+           <p>TransUnioun Consumer Solutions </p>
+           <p>P.O.Box 2000</p>
+           <p>Chester,PA 19016</p>
+       </div>
+
+       <div id="letterbody">
+           <p>Dear Transunion,</p>
+           <p>Re:Letter to Remove Inaccurate Inquiry
+           <p>According to my most recent credit report, your company is currently reporting to the three credit bureaus that I applied for credit with your organization. I did not grant you authorization to review my credit report.</p>
+          ${inquirymailbody.map((e) => {
+                return (
+                    `<div style="text-align:justify">
+                    <p>${e}</p>
+                </div>
+               `
+                )
+            })}
+       <p style="text-align:justify">The presence of this inquiry is adversely affecting my credit report and is impeding my ability to obtain necessary credit. Time is of the essence so I would greatly appreciate a response from you within thirty (30) days.</p>
+
+       <p style="text-align:justify">Please mail me the copy of the signed application or a letter indicating your intention to delete the inquiry</p>
+
+       <p>Thank you for your time and help in this matter.</p>
+
+       </div>
+       <div id='letterfooter'>
+           <p>Sincerely,</p>
+           <p>${transunionBorrowerName}</p>
+       </div>
+   </div>`, {
+                callback: function (pdf) {
+                    var demo = pdf.output("datauristring");
+                    pdf.save("transunion_inquiry.pdf")
+
+                    var disputedate = new Date().toLocaleDateString()
+                    var _disputeDate = disputedate
+
+                    const article = {
+                        trackingToken: TrackingToken,
+                        transunion_create_date: _disputeDate,
+                        inquiry_pdf:demo,
+                    };
+
+                    axios.post(TRANSUNION_DISPUTE_LETTER, article)
+                        .then((response) => {
+
+                            if (response.data.statusCode === 400) {
+                                toast.error('Dispute letter already sent', {
+                                    position: "top-center",
+                                    autoClose: 5000,
+                                    hideProgressBar: true,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                    theme: "colored"
+                                });
+
+                            }
+                            if (response.data.statusCode === 200) {
+                                // Navigate("/transunionRound_1")
+                                toast.success('Dispute letter Created successfully', {
+                                    position: "top-center",
+                                    autoClose: 5000,
+                                    hideProgressBar: true,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                    theme: "colored"
+                                });
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                        })
+                }
+            })
+
+
+
+
+
+
+
+        }
+    }
+
+
+
 
 
     return (
         <>
-           <Header title="TRANSUNION DISPUTE" />
+            <Header title="TRANSUNION DISPUTE" />
 
 
-            <div className='mt-5'>
-                <DisputeStepper progress={progress} />
+
+
+            <div className='_dispute_heading'>
+                <h6 className='_dispute_heading_title'>TRANSUNION DISPUTE</h6>
             </div>
 
 
             <section className='creditItem' id="creditItem" >
-
                 <Container className='mt-5 disputebox '>
                     <Row>
-                        <Col lg={12}>
+                        <Col lg={12} md={12}>
+                            <p className='disputebox_heading'>account</p>
                             <div className='transUnion_filter'>
-                                <div className='filter_icon'>
-                                    <p className='filter_text'>FILTERS</p>
-                                    <p className=""><FaSlidersH /></p>
-                                </div>
-                                <div>
-                                    {/* <button className=' btn backbtton'>BACK</button> */}
-                                    <Link to="/creditItem" className=' btn backbtton' type="button">BACK</Link>
-                                    {finish ?
-
-                                        <button className='btn selectbtton' onClick={sendEmail}>FINISH</button>
+                                <div className='back_selectbtn'>
+                                    {count === 0 ?
+                                        <button className=' btn selectbtton'> NO ITEM SELECTED </button>
                                         :
-                                        count === 0
-                                            ?
-                                            <button className=' btn selectbtton'> NO ITEM SELECTED </button>
-                                            :
-                                            <button className=' btn selectbttonnext' onClick={handleDisputeReason} > {count} &nbsp;ITEM SELECTED - NEXT </button>
+                                        <button className=' btn selectbttonnext' onClick={handleDisputeReason} > {count} &nbsp;ITEM SELECTED - NEXT </button>
+
                                     }
+                                    <button className='btn selectbtton' onClick={sendEmail}>FINISH</button>
                                 </div>
                             </div>
 
 
                             <Row>
-                                <Col lg={2}>
+                                <Col lg={2} md={2}>
                                     <div className="nav  verticaLnav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                                         <p className='accountstatus'>Account Status</p>
                                         <button className="nav-link verticalLink active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#positive" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Positive</button>
@@ -427,17 +658,16 @@ export default function SelectDisputeAC() {
                                         <button className="nav-link verticalLink" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#all" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">All</button>
                                     </div>
                                 </Col>
-                                <Col lg={10}>
+                                <Col lg={10} md={10}>
                                     <div className="tab-content" id="v-pills-tabContent">
                                         {/* ---------------------------------positive----------------------------------------------------- */}
                                         <div className="tab-pane fade show active" id="positive" role="tabpanel" aria-labelledby="v-pills-home-tab">
                                             {/* *************  horizatanl navbar positive ******************* */}
-
-                                            <Col lg={12}>
+                                            <Col lg={12} md={12}>
                                                 <div className="tab-content" id="pills-tabContent">
                                                     {/* ************************ transunion report ************************ */}
                                                     <div className="tab-pane fade show active" id="transunion" role="tabpanel" aria-labelledby="pills-home-tab">
-                                                        <Col lg={12}>
+                                                        <Col lg={12} md={12}>
                                                             <div className="accordian_content mt-3">
                                                                 <Accordion>
                                                                     <Accordion.Item eventKey="0">
@@ -445,26 +675,26 @@ export default function SelectDisputeAC() {
                                                                         <Accordion.Body>
                                                                             <Container>
                                                                                 <Row>
-                                                                                    <Col lg={12}>
+                                                                                    <Col lg={12} md={12}>
                                                                                         {positive_transUnion ?
                                                                                             positive_transUnion.map((e, index) => {
                                                                                                 var remark = e.Remark
                                                                                                 var remark_value = Array.isArray(remark)
                                                                                                 return (
                                                                                                     <>
-                                                                                                        <Table size="sm" className='maintable'>
+                                                                                                        <Table size="sm" className='maintable' responsive>
                                                                                                             <tr>
-                                                                                                                <td className='credit_checkbox'>
+                                                                                                                <td className='credit_checkbox '>
                                                                                                                     <div className="form-check" >
                                                                                                                         <input onChange={e => handleCheckCount(e)} className="form-check-input  mycheckbox" type="checkbox" value={index} id="flexCheckChecked" />
-                                                                                                                        <label className="form-check-label " for="flexC  heckChecked">
+                                                                                                                        <label className="form-check-label " htmlfor="flexCheckChecked">
                                                                                                                             <span className="accountName">{e.GrantedTrade.AccountType.description}</span>
                                                                                                                             <br></br>
                                                                                                                             <b className="accountType">{e.creditorName}</b>
                                                                                                                         </label>
                                                                                                                     </div>
                                                                                                                 </td>
-                                                                                                                <td>BALANCE
+                                                                                                                <td >BALANCE
                                                                                                                     <br></br>
                                                                                                                     <b>${e.highBalance}</b>
                                                                                                                 </td>
@@ -472,7 +702,6 @@ export default function SelectDisputeAC() {
                                                                                                                     <br></br>
                                                                                                                     <b>Positive</b>
                                                                                                                 </td>
-
                                                                                                                 <td className="disputeReason" id={index} onClick={e => handleShow(e)} value={index} name="dispute" style={{ color: "red" }}>Add Dispute Reason </td>
                                                                                                                 <td type="button" className='pulsbutton' data-bs-toggle="collapse" data-bs-target={`#collapse${index}`} aria-expanded="false" aria-controls="collapseExample"><FaPlusSquare style={{ fontSize: "22px", color: "green" }} /></td>
                                                                                                             </tr>
@@ -481,8 +710,8 @@ export default function SelectDisputeAC() {
                                                                                                             <div className="card card-body">
                                                                                                                 <Container>
                                                                                                                     <Row>
-                                                                                                                        <Col lg={6}>
-                                                                                                                            <Table striped bordered hover size="sm" className='table_content'>
+                                                                                                                        <Col lg={6} md={6}>
+                                                                                                                            <Table striped bordered hover size="sm" className='table_content' responsive>
                                                                                                                                 <tbody className='table_details'>
                                                                                                                                     <tr>
                                                                                                                                         <td>Account</td>
@@ -519,8 +748,8 @@ export default function SelectDisputeAC() {
                                                                                                                                 </tbody>
                                                                                                                             </Table>
                                                                                                                         </Col>
-                                                                                                                        <Col lg={6}>
-                                                                                                                            <Table striped bordered hover size="sm" className='table_content' >
+                                                                                                                        <Col lg={6} md={6}>
+                                                                                                                            <Table striped bordered hover size="sm" className='table_content' responsive >
                                                                                                                                 <tbody>
                                                                                                                                     <tr>
                                                                                                                                         <td>Open Date</td>
@@ -567,7 +796,7 @@ export default function SelectDisputeAC() {
                                                                                                                                                 })
                                                                                                                                                 :
                                                                                                                                                 <>
-                                                                                                                                                    {e.Remark == undefined ?
+                                                                                                                                                    {e.Remark === undefined ?
                                                                                                                                                         "--------"
                                                                                                                                                         :
                                                                                                                                                         e.Remark.RemarkCode.description
@@ -597,63 +826,6 @@ export default function SelectDisputeAC() {
                                                                             </Container>
                                                                         </Accordion.Body>
                                                                     </Accordion.Item>
-                                                                    {/************************ ************** INQUIRIES ***************************************************************/}
-                                                                    <Accordion.Item eventKey="2">
-                                                                        <Accordion.Header className='accordinbtn'>INQUIRIES</Accordion.Header>
-                                                                        <Accordion.Body>
-                                                                            <Container>
-                                                                                <Row>
-                                                                                    <Col lg={12}>
-                                                                                        {transUnionInquiry ?
-                                                                                            transUnionInquiry.map((e) => {
-
-                                                                                                return (
-                                                                                                    <Table size="sm" className='maintable '>
-                                                                                                        <tr>
-                                                                                                            <td className='credit_checkbox'>
-                                                                                                                <div className="form-check">
-                                                                                                                    <label className="form-check-label" for="flexCheckChecked">
-                                                                                                                        Business Name
-                                                                                                                        <br></br>
-                                                                                                                        <b>{e.Inquiry.subscriberName}</b>
-                                                                                                                    </label>
-                                                                                                                </div>
-                                                                                                            </td>
-                                                                                                            <td style={{ width: "236px" }}>Business Type
-                                                                                                                <br></br>
-                                                                                                                <b>{e.Inquiry.IndustryCode.description}</b>
-                                                                                                            </td>
-                                                                                                            <td>Inquiry For
-                                                                                                                <br></br>
-                                                                                                                {e.Inquiry.inquiryType === "I" ?
-                                                                                                                    <b>Individual</b>
-                                                                                                                    :
-                                                                                                                    <b>-</b>
-                                                                                                                }
-
-                                                                                                            </td>
-
-
-                                                                                                            <td>DATE
-                                                                                                                <br></br>
-                                                                                                                <b>{e.Inquiry.inquiryDate}</b>
-                                                                                                            </td>
-                                                                                                        </tr>
-                                                                                                    </Table>
-                                                                                                )
-                                                                                            })
-                                                                                            :
-                                                                                            <>
-                                                                                                Loading.........................
-                                                                                            </>}
-                                                                                    </Col>
-                                                                                </Row>
-                                                                            </Container>
-
-                                                                        </Accordion.Body>
-                                                                    </Accordion.Item>
-
-
                                                                 </Accordion>
                                                             </div>
                                                         </Col>
@@ -667,11 +839,11 @@ export default function SelectDisputeAC() {
 
                                         <div className="tab-pane fade" id="negative" role="tabpanel" aria-labelledby="v-pills-profile-tab">
                                             {/* *************  horizatanl navbar negative ******************* */}
-                                            <Col lg={12}>
+                                            <Col lg={12} md={12}>
                                                 <div className="tab-content" id="pills-tabContent">
                                                     {/* ************************ transunion report ************************ */}
                                                     <div className="tab-pane fade show active" id="transunion1" role="tabpanel" aria-labelledby="pills-home-tab">
-                                                        <Col lg={12}>
+                                                        <Col lg={12} md={12}>
                                                             <div className="accordian_content mt-3">
                                                                 <Accordion>
                                                                     <Accordion.Item eventKey="0">
@@ -679,18 +851,18 @@ export default function SelectDisputeAC() {
                                                                         <Accordion.Body>
                                                                             <Container>
                                                                                 <Row>
-                                                                                    <Col lg={12}>
+                                                                                    <Col lg={12} md={12}>
                                                                                         {negative_transUnion ?
                                                                                             negative_transUnion.map((e, index) => {
                                                                                                 var remark = e.Remark
                                                                                                 var remark_value = Array.isArray(remark)
                                                                                                 return (
                                                                                                     <>
-                                                                                                        <Table size="sm" className='maintable'>
+                                                                                                        <Table size="sm" className='maintable' responsive>
                                                                                                             <tr>
                                                                                                                 <td className='credit_checkbox'>
                                                                                                                     <div className="form-check">
-                                                                                                                        <input onChange={e => handleCheckCount(e)} className="form-check-input mycheckbox" type="checkbox" value="" id="flexCheckChecked" />
+                                                                                                                        <input onChange={e => handleCheckCount(e)} className="form-check-input  mycheckbox" type="checkbox" value={index} id="flexCheckChecked" />
                                                                                                                         <label className="form-check-label" for="flexCheckChecked">
                                                                                                                             <span className="accountName">{e.GrantedTrade.AccountType.description}</span>
                                                                                                                             <br></br>
@@ -715,8 +887,8 @@ export default function SelectDisputeAC() {
                                                                                                             <div className="card card-body">
                                                                                                                 <Container>
                                                                                                                     <Row>
-                                                                                                                        <Col lg={6}>
-                                                                                                                            <Table striped bordered hover size="sm" className='table_content'>
+                                                                                                                        <Col lg={6} md={6}  >
+                                                                                                                            <Table striped bordered hover size="sm" className='table_content' responsive>
                                                                                                                                 <tbody>
                                                                                                                                     <tr>
                                                                                                                                         <td>Account</td>
@@ -753,8 +925,8 @@ export default function SelectDisputeAC() {
                                                                                                                                 </tbody>
                                                                                                                             </Table>
                                                                                                                         </Col>
-                                                                                                                        <Col lg={6}>
-                                                                                                                            <Table striped bordered hover size="sm" className='table_content' >
+                                                                                                                        <Col lg={6} md={6}>
+                                                                                                                            <Table striped bordered hover size="sm" className='table_content' responsive>
                                                                                                                                 <tbody>
                                                                                                                                     <tr>
                                                                                                                                         <td>Open Date</td>
@@ -799,7 +971,7 @@ export default function SelectDisputeAC() {
                                                                                                                                                 })
                                                                                                                                                 :
                                                                                                                                                 <>
-                                                                                                                                                    {e.Remark == undefined ?
+                                                                                                                                                    {e.Remark === undefined ?
                                                                                                                                                         "--------"
                                                                                                                                                         :
                                                                                                                                                         e.Remark.RemarkCode.description
@@ -829,65 +1001,6 @@ export default function SelectDisputeAC() {
                                                                             </Container>
                                                                         </Accordion.Body>
                                                                     </Accordion.Item>
-
-                                                                    {/************************ ************** INQUIRIES ***************************************************************/}
-                                                                    <Accordion.Item eventKey="2">
-                                                                        <Accordion.Header className='accordinbtn'>INQUIRIES</Accordion.Header>
-                                                                        <Accordion.Body>
-                                                                            <Container>
-                                                                                <Row>
-                                                                                    <Col lg={12}>
-                                                                                        {transUnionInquiry ?
-                                                                                            transUnionInquiry.map((e) => {
-
-                                                                                                return (
-                                                                                                    <Table size="sm" className='maintable '>
-                                                                                                        <tr>
-                                                                                                            <td className='credit_checkbox'>
-                                                                                                                <div className="form-check">
-                                                                                                                    <label className="form-check-label" for="flexCheckChecked">
-                                                                                                                        Business Name
-                                                                                                                        <br></br>
-                                                                                                                        <b>{e.Inquiry.subscriberName}</b>
-                                                                                                                    </label>
-                                                                                                                </div>
-                                                                                                            </td>
-                                                                                                            <td style={{ width: "236px" }}>Business Type
-                                                                                                                <br></br>
-                                                                                                                <b>{e.Inquiry.IndustryCode.description}</b>
-                                                                                                            </td>
-                                                                                                            <td>Inquiry For
-                                                                                                                <br></br>
-                                                                                                                {e.Inquiry.inquiryType === "I" ?
-                                                                                                                    <b>Individual</b>
-                                                                                                                    :
-                                                                                                                    <b></b>
-                                                                                                                }
-
-                                                                                                            </td>
-
-
-                                                                                                            <td>DATE
-                                                                                                                <br></br>
-                                                                                                                <b>{e.Inquiry.inquiryDate}</b>
-                                                                                                            </td>
-                                                                                                        </tr>
-                                                                                                    </Table>
-                                                                                                )
-                                                                                            })
-                                                                                            :
-                                                                                            <>
-                                                                                                Loading.........................
-                                                                                            </>}
-                                                                                    </Col>
-                                                                                </Row>
-                                                                            </Container>
-
-                                                                        </Accordion.Body>
-                                                                    </Accordion.Item>
-
-
-
                                                                 </Accordion>
                                                             </div>
                                                         </Col>
@@ -902,13 +1015,11 @@ export default function SelectDisputeAC() {
 
                                         <div className="tab-pane fade" id="all" role="tabpanel" aria-labelledby="v-pills-settings-tab">
                                             {/* *************  horizatanl navbar positive ******************* */}
-
-
-                                            <Col lg={12}>
+                                            <Col lg={12} md={12}>
                                                 <div className="tab-content" id="pills-tabContent">
                                                     {/* ************************ transunion report ************************ */}
                                                     <div className="tab-pane fade show active" id="transunion4" role="tabpanel" aria-labelledby="pills-home-tab">
-                                                        <Col lg={12}>
+                                                        <Col lg={12} md={12}>
                                                             <div className="accordian_content mt-3">
                                                                 <Accordion>
                                                                     <Accordion.Item eventKey="0">
@@ -916,18 +1027,18 @@ export default function SelectDisputeAC() {
                                                                         <Accordion.Body>
                                                                             <Container>
                                                                                 <Row>
-                                                                                    <Col lg={12}>
+                                                                                    <Col lg={12} md={12}>
                                                                                         {transUnion ?
                                                                                             transUnion.map((e, index) => {
                                                                                                 var remark = e.Remark
                                                                                                 var remark_value = Array.isArray(remark)
                                                                                                 return (
                                                                                                     <>
-                                                                                                        <Table size="sm" className='maintable'>
+                                                                                                        <Table size="sm" className='maintable' responsive>
                                                                                                             <tr>
                                                                                                                 <td className='credit_checkbox'>
                                                                                                                     <div className="form-check">
-                                                                                                                        <input onChange={e => handleCheckCount(e)} className="form-check-input mycheckbox" type="checkbox" value="" id="flexCheckChecked" />
+                                                                                                                        <input onChange={e => handleCheckCount(e)} className="form-check-input  mycheckbox" type="checkbox" value={index} id="flexCheckChecked" />
                                                                                                                         <label className="form-check-label" for="flexCheckChecked">
 
                                                                                                                             <span className="accountName">{e.GrantedTrade.AccountType.description}</span>
@@ -957,8 +1068,8 @@ export default function SelectDisputeAC() {
                                                                                                             <div className="card card-body">
                                                                                                                 <Container>
                                                                                                                     <Row>
-                                                                                                                        <Col lg={6}>
-                                                                                                                            <Table striped bordered hover size="sm" className='table_content'>
+                                                                                                                        <Col lg={6} md={6} >
+                                                                                                                            <Table striped bordered hover size="sm" className='table_content' responsive>
                                                                                                                                 <tbody>
                                                                                                                                     <tr>
                                                                                                                                         <td>Account</td>
@@ -997,8 +1108,8 @@ export default function SelectDisputeAC() {
                                                                                                                                 </tbody>
                                                                                                                             </Table>
                                                                                                                         </Col>
-                                                                                                                        <Col lg={6}>
-                                                                                                                            <Table striped bordered hover size="sm" className='table_content' >
+                                                                                                                        <Col lg={6} md={6}>
+                                                                                                                            <Table striped bordered hover size="sm" className='table_content' responsive>
                                                                                                                                 <tbody>
                                                                                                                                     <tr>
                                                                                                                                         <td>Open Date</td>
@@ -1044,7 +1155,7 @@ export default function SelectDisputeAC() {
                                                                                                                                                 })
                                                                                                                                                 :
                                                                                                                                                 <>
-                                                                                                                                                    {e.Remark == undefined ?
+                                                                                                                                                    {e.Remark === undefined ?
                                                                                                                                                         "--------"
                                                                                                                                                         :
                                                                                                                                                         e.Remark.RemarkCode.description
@@ -1074,48 +1185,106 @@ export default function SelectDisputeAC() {
                                                                             </Container>
                                                                         </Accordion.Body>
                                                                     </Accordion.Item>
+                                                                </Accordion>
+                                                            </div>
+                                                        </Col>
+                                                    </div>
+                                                </div>
+                                            </Col>
+                                        </div>
+                                    </div>
+                                </Col>
+                            </Row>
+                        </Col>
 
+
+
+
+                        <hr className='dispute_divider'></hr>
+
+
+
+                        <Col lg={12} md={12}>
+                            <p className='disputebox_heading'>Inquiry</p>
+                            <div className='transUnion_filter'>
+                                <div className='back_selectbtn'>
+                                    {inquiryCount === 0
+                                        ?
+                                        <button className=' btn selectbtton'> NO ITEM SELECTED </button>
+                                        :
+                                        <button className=' btn selectbttonnext' onClick={handleInquiryDisputeReason} > {inquiryCount} &nbsp;ITEM SELECTED - NEXT </button>
+                                    }
+                                    <button className='btn selectbtton' onClick={sendInquiryEmail}>FINISH</button>
+
+                                </div>
+                            </div>
+
+
+                            <Row>
+                                <Col lg={2} md={2}>
+                                    <div className="nav  verticaLnav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                        <p className='accountstatus'>Account Status</p>
+                                        <button className="nav-link verticalLink active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#positive" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">All</button>
+                                    </div>
+                                </Col>
+                                <Col lg={10} md={10}>
+                                    <div className="tab-content" id="v-pills-tabContent">
+                                        {/* ---------------------------------positive----------------------------------------------------- */}
+                                        <div className="tab-pane fade show active" id="positive" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                                            {/* *************  horizatanl navbar positive ******************* */}
+
+                                            <Col lg={12} md={12}>
+                                                <div className="tab-content" id="pills-tabContent">
+                                                    {/* ************************ transunion report ************************ */}
+                                                    <div className="tab-pane fade show active" id="transunion" role="tabpanel" aria-labelledby="pills-home-tab">
+                                                        <Col lg={12} md={12}>
+                                                            <div className="accordian_content mt-3">
+                                                                <Accordion>
                                                                     {/************************ ************** INQUIRIES ***************************************************************/}
                                                                     <Accordion.Item eventKey="2">
                                                                         <Accordion.Header className='accordinbtn'>INQUIRIES</Accordion.Header>
                                                                         <Accordion.Body>
                                                                             <Container>
                                                                                 <Row>
-                                                                                    <Col lg={12}>
+                                                                                    <Col lg={12} md={12}>
                                                                                         {transUnionInquiry ?
-                                                                                            transUnionInquiry.map((e) => {
+                                                                                            transUnionInquiry.map((e, index) => {
 
                                                                                                 return (
-                                                                                                    <Table size="sm" className='maintable '>
+                                                                                                    <Table size="sm" className='maintable ' responsive>
                                                                                                         <tr>
                                                                                                             <td className='credit_checkbox'>
                                                                                                                 <div className="form-check">
-                                                                                                                    <label className="form-check-label" for="flexCheckChecked">
+                                                                                                                    <input onChange={e => handleInquiryCheckCount(e)} className="form-check-input  mycheckbox1" type="checkbox" value={index} id="flexCheckChecked" />
+                                                                                                                    <label className="form-check-label " htmlfor="flexCheckChecked">
                                                                                                                         Business Name
                                                                                                                         <br></br>
-                                                                                                                        <b>{e.Inquiry.subscriberName}</b>
+                                                                                                                        <b className='subscriberName'>{e.Inquiry.subscriberName}</b>
                                                                                                                     </label>
                                                                                                                 </div>
                                                                                                             </td>
                                                                                                             <td style={{ width: "236px" }}>Business Type
                                                                                                                 <br></br>
-                                                                                                                <b>{e.Inquiry.IndustryCode.description}</b>
+                                                                                                                <b className='industryCode'>{e.Inquiry.IndustryCode.description}</b>
                                                                                                             </td>
                                                                                                             <td>Inquiry For
                                                                                                                 <br></br>
-                                                                                                                {e.Inquiry.inquiryType === "I" ?
-                                                                                                                    <b>Individual</b>
+                                                                                                                <span className='individualName'>  {e.Inquiry.inquiryType === "I" ?
+                                                                                                                    <b className='individual'>Individual</b>
                                                                                                                     :
-                                                                                                                    <b></b>
-                                                                                                                }
+                                                                                                                    <b>-</b>
+                                                                                                                }</span>
+
 
                                                                                                             </td>
 
 
                                                                                                             <td>DATE
                                                                                                                 <br></br>
-                                                                                                                <b>{e.Inquiry.inquiryDate}</b>
+                                                                                                                <b className='inquiryDate'>{e.Inquiry.inquiryDate}</b>
                                                                                                             </td>
+                                                                                                            <td className="disputeReason1" id={index} onClick={e => handleShowInquire(e)} value={index} name="dispute" style={{ color: "red" }}>Add Dispute Reason </td>
+
                                                                                                         </tr>
                                                                                                     </Table>
                                                                                                 )
@@ -1127,10 +1296,8 @@ export default function SelectDisputeAC() {
                                                                                     </Col>
                                                                                 </Row>
                                                                             </Container>
-
                                                                         </Accordion.Body>
                                                                     </Accordion.Item>
-
                                                                 </Accordion>
                                                             </div>
                                                         </Col>
@@ -1146,6 +1313,9 @@ export default function SelectDisputeAC() {
                 </Container >
             </section >
 
+
+
+            {/***************************  account modal ************************************************************/}
             <Modal show={show} onHide={handleClose1}>
                 <div className='text-center modal_adddisput_title '>
                     <h6 >Add Dispute Reason</h6>
@@ -1181,11 +1351,15 @@ export default function SelectDisputeAC() {
                             </Table>
 
                         </div>
+
                         <div className='selectdisputreason' >
-                            Select Dispute reason for this item.You can always edit the text to best describe your specific situation 
+                            Select Dispute reason for this item.You can always edit the text to best describe your specific situation
                         </div>
 
                         <div className="reasonSelection">
+                            {disputeReasonError ? <p className='error' id='disputeReasonError'>*Select Dispute Reason </p>
+                                : <p></p>
+                            }
                             <Form.Label>Select Reason:</Form.Label>
                             <Form.Select aria-label="Default select example" size="sm" onChange={(e) => showcustom(e)}>
                                 <option>Suggested Reason</option>
@@ -1194,7 +1368,6 @@ export default function SelectDisputeAC() {
                                 <option value="incorrect">Incorrect Balance</option>
                                 <option value="balance">Balance Was Paid</option>
                                 <option value="charged">Charged Off Balance</option>
-                                <option value="collection">Sent To Collections</option>
                                 <option value="victim">Victim of Identity Theft</option>
                                 <option value="disputed">I Previously Disputed This</option>
                             </Form.Select>
@@ -1217,20 +1390,16 @@ export default function SelectDisputeAC() {
 
                             {incorrect ?
                                 <div className='detailsReasons' id="incorrect" >
-                                    Incorrect Balance <br />
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat
-                                    consequuntur dolorum facilis
-                                    aliquam eos illo, iusto pariatur maiores
+                                    This dispute is regarding showing incorrect balance in my account. I am requesting that the item be removed to correct the information.
+                                    Please reinvestigate this matter and correct the disputed item's score.
                                 </div> :
                                 <div></div>
                             }
 
                             {balance ?
                                 <div className='detailsReasons' id="balance">
-                                    Balance Was Paid <br />
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat
-                                    consequuntur dolorum facilis
-                                    aliquam eos illo, iusto pariatur maiores
+                                    In this account i have already paid this amount.kindly check and give me proper information regarding to this dispute item's.
+
                                 </div> :
                                 <div></div>
                             }
@@ -1238,34 +1407,15 @@ export default function SelectDisputeAC() {
 
                             {charged ?
                                 <div className='detailsReasons' id="charged">
-                                    Charged Off Balance<br />
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat
-                                    consequuntur dolorum facilis
-                                    aliquam eos illo, iusto pariatur maiores
+                                    I have maintain my account with minimum balance as per the bank rules please investigate this dispute item's and resolve my credit Score.
                                 </div>
                                 :
                                 <div></div>
                             }
-
-
-                            {collection ?
-                                <div className='detailsReasons' id="collection" >
-                                    Sent To Collections<br />
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat
-                                    consequuntur dolorum facilis
-                                    aliquam eos illo, iusto pariatur maiores
-                                </div>
-                                :
-                                <div></div>
-                            }
-
 
                             {victim ?
                                 <div className='detailsReasons' id="victim" >
-                                    Victim of Identity Theft<br />
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat
-                                    consequuntur dolorum facilis
-                                    aliquam eos illo, iusto pariatur maiores
+                                    This is not my account i have never register this account please check and remove this account activity from my credit report.
                                 </div>
                                 :
                                 <div></div>
@@ -1273,14 +1423,71 @@ export default function SelectDisputeAC() {
 
                             {disputed ?
                                 <div className='detailsReasons' id="disputed" >
-                                    I Previously Disputed This<br />
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat
-                                    consequuntur dolorum facilis
-                                    aliquam eos illo, iusto pariatur maiores
+                                    I have already disputed this item's please reinvestigate this dispute item's and kindly resolve it ASAP.
                                 </div>
                                 :
                                 <div></div>
                             }
+                        </div>
+
+                        {selectReason ? <p className='error mt-2' id="selctReason">*please select reason</p> : <p></p>}
+
+                    </section>
+                </Modal.Body>
+                <Modal.Footer className='disputereason_footer'>
+                    <Button variant="secondary" onClick={handleClose1}>
+                        Close
+                    </Button>
+                    <Button variant="success" onClick={() => { first.current() }}>
+                        Save
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/*************************** Inquiry modal ************************************************************/}
+            <Modal show={showInquire}>
+                <div className='text-center modal_adddisput_title '>
+                    <h6 >Add Dispute Reason checking</h6>
+                    <hr />
+                </div>
+                <Modal.Body>
+                    <section className='disputemodel'>
+                        <div>
+
+                            <Table className='selectdisputereason_table'>
+                                <tbody>
+                                    <tr>
+                                        <td colSpan="2"><span>BUSINESS NAME</span><br /><p style={{ fontSize: "15px" }} className='modalsubscriberName'><b >{subscriberName}</b></p></td>
+                                    </tr>
+                                    <tr>
+                                        <td>INQUIRY FOR <br /><b>{individualName}</b></td>
+                                        <td>INQUIRY DATE <br /><b className='modalinquiryDate'>{inquiryDate}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td colSpan="2">BUSINESS TYPE<br /><b className='modalindustryCode'>{industryCode}</b></td>
+                                    </tr>
+
+                                </tbody>
+                            </Table>
+                        </div>
+
+                        <div className='selectdisputreason' >
+                            Type Dispute reason for this item.You can always edit the text to best describe your specific situation
+                        </div>
+
+                        <div className="reasonSelection">
+                            {disputeReasonError ? <p className='error' id='disputeReasonError'>*Select Dispute Reason </p>
+                                : <p></p>
+                            }
+                            <Form.Label>Type your reason here:</Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                id="inquiryReason"
+                                rows={3}
+                                className="mb-3 validate"
+                                placeholder="Your Reason"
+                                required
+                            />
                         </div>
                     </section>
                 </Modal.Body>
@@ -1294,6 +1501,8 @@ export default function SelectDisputeAC() {
                 </Modal.Footer>
             </Modal>
 
+
+
             <ToastContainer
                 position="top-center"
                 autoClose={5000}
@@ -1306,9 +1515,7 @@ export default function SelectDisputeAC() {
                 pauseOnHover
             />
 
-
-
-
+            <UserFooter />
 
         </>
 

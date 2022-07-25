@@ -1,17 +1,11 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@300&family=Bitter&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@300&family=Bitter&display=swap'); */
-/* @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap'); */
-/* @import url('https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&display=swap'); */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;400;500;600;700;800;900&display=swap');
-
-/*  */
 
 html {
     height: 100%;
     box-sizing: border-box;
 }
 
-body{
+body {
     position: relative;
     margin: 0 !important;
     padding-bottom: 20rem;
@@ -20,7 +14,6 @@ body{
 
 * {
     font-family: 'Inter', sans-serif;
-
 }
 
 /* ------------ header-navbar------------------ */
@@ -303,6 +296,10 @@ button {
     box-shadow: none !important;
 }
 
+.demo .MuiStepLabel-iconContainer .MuiSvgIcon-root.Mui-active {
+    color: #14684e !important;
+}
+
 .css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-active {
     color: #14684e !important;
 }
@@ -310,6 +307,13 @@ button {
 .css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-completed {
     color: #14684e !important;
 }
+
+
+.demo1 .MuiStepLabel-iconContainer .MuiSvgIcon-root.Mui-active {
+    color: #14684e !important;
+}
+
+
 
 /* ------------------------Modul------------------------- */
 
@@ -412,40 +416,6 @@ button {
 }
 
 
-/* .creditscore_main{
-    text-align: center;
-    margin-top: 40px;   
-}
-
-.creditscore_text{
-    font-size: 14px;
-}
-.creditscore_card{
-    text-align: center;
-    background-color:#a8d8da ;
-    margin-top: 23px; 
-    padding: 5px;
-    border: none;
-    color: #07543c;
-   
-
-}
-
-.creditscore_card .cardcontanier .card_icon{
-    color: #004C4D;
-    font-size: 50px;
-}
-
-.card_text{
-  text-align: justify;  
-  color:  #0c4b4c;
-  font-size: 14px;
-} */
-/* .card:hover{
-    box-shadow: 0 0 11px 0 white !important;   
-    border: 1px solid #004C4D;
-} */
-
 /*-------- smartmodule------------ */
 .smartmodule {
     margin-top: 70px;
@@ -455,7 +425,8 @@ button {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding: 27px;
+    padding-top: 27px;
+    height: 478px;
 }
 
 .smart_item_text {
@@ -542,6 +513,17 @@ button {
 .mail_box,
 .phone_box {
     display: flex;
+}
+
+.mail_box .mail .fw-4 {
+    text-decoration: none;
+    color: white;
+}
+
+
+.phone_box .phone .fw-4 {
+    text-decoration: none;
+    color: white;
 }
 
 .address .fw-4,
@@ -853,6 +835,22 @@ button {
 
 .signBtn {
     width: 113px;
+}
+
+@media (min-width:320px) and (max-width:767px) {
+    .signBtn {
+        width: 113px;
+        margin-bottom: 40px;
+    }
+
+}
+
+@media (min-width:375px) and (max-width:767px) {
+    .signBtn {
+        width: 113px;
+        margin-bottom: 0px;
+    }
+
 }
 
 .checkbox {
@@ -1243,39 +1241,6 @@ button {
     margin-top: 12px;
 }
 
-/* .creditItems_sectionContent ul {
-    border: none;
-    margin-left: auto;
-}
-
-.creditItems_sectionContent ul li a {
-    font-weight: bold;
-}
-
-.creditItems_sectionContent ul li a:hover {
-    border-color: #fff !important;
-    font-weight: bold !important;
-    color: #14684e !important;
-    border-bottom: 4px solid #14684e !important;
-}
-
-.creditItems_sectionContent ul li a {
-    border-color: #fff !important;
-    font-weight: bold !important;
-    color: #14684e !important;
-    border-bottom: 4px solid white !important;
-}
-
-.creditItems_sectionContent ul li a.active {
-    border-color: #fff !important;
-    font-weight: bold !important;
-    color: #14684e !important;
-    border-bottom: 4px solid #14684e !important;
-}
-
-.crditItemtable {
-    padding: 5px 0px 0px 0px;
-} */
 
 .personal_offer {
     display: flex;
@@ -1312,8 +1277,6 @@ button {
 }
 
 .cardimg {
-    /* height: 176px;
-    width: auto; */
     width: 300px;
 }
 
@@ -1362,11 +1325,6 @@ button {
     color: #4a4a4a;
     text-transform: uppercase;
 }
-
-
-
-
-
 
 
 .accountStatus {
@@ -1508,7 +1466,8 @@ button {
     padding: 31px;
 }
 
-.history_sec3_title h1,.history_sec4_title h1 {
+.history_sec3_title h1,
+.history_sec4_title h1 {
     margin: 0;
     font-size: 20px;
     color: #4a4a4a;
@@ -1553,12 +1512,10 @@ button {
     margin-top: 12px;
 }
 
-.history_graph{
+.history_graph {
     padding-right: 159px;
     padding-left: 159px;
 }
-
-
 
 /*---------------user profile_nav css--------------- */
 
@@ -1615,9 +1572,23 @@ button {
     font-size: 14px;
 }
 
+.footerLink {
+    color: white;
+    text-decoration: none;
+}
+
+.footerLink:hover {
+    color: white;
+    text-decoration: none;
+}
 
 
 /*----------------------- media query of header section------------------------------------ */
+
+
+
+
+
 @media (min-width:320px) and (max-width:554px) {
     .navmenubutton .homebutton {
 
@@ -1760,9 +1731,9 @@ button {
         display: block;
     }
 
-  
 
- 
+
+
 
     .workimg1 {
         padding: 33px;
@@ -1883,7 +1854,7 @@ button {
     }
 
     .pricing_plan {
-        width: 100%;
+        /* width: 100%; */
     }
 
     .personaldeatails {
@@ -2118,7 +2089,7 @@ button {
         margin-top: 80px;
     }
 
-   
+
     .Login_form {
         padding: 0px 40px 0px 40px;
 
@@ -2411,6 +2382,15 @@ button {
     }
 }
 
+@media (min-width: 320px) and (max-width: 554px) {
+    .account_feature li {
+        font-size: 14px;
+        padding: 9px;
+        text-align: left;
+        width: 139px;
+    }
+}
+
 .print-link {
     color: #07543c;
     text-decoration: underline;
@@ -2543,6 +2523,14 @@ button {
 .error {
     color: red;
     font-size: 13px;
+
+}
+
+.error1 {
+    color: red;
+    font-size: 13px;
+    margin-bottom: 2px;
+
 }
 
 
@@ -2694,6 +2682,10 @@ button {
     font-weight: bold;
     border: 0.1px solid #163e2447;
     box-shadow: rgb(59 56 42) 0px 1px 5px -1px;
+    text-decoration: none !important;
+    text-align: center;
+    padding: 8px;
+    cursor: pointer;
 }
 
 .homeDisputeBtn:hover {
@@ -2705,6 +2697,10 @@ button {
     font-size: 13px;
     font-weight: 400;
     box-shadow: rgb(59 56 42) 0px 1px 5px -1px;
+    text-decoration: none !important;
+    text-align: center;
+    padding: 8px;
+    cursor: pointer;
 }
 
 .score .outoffscore {
@@ -2763,19 +2759,18 @@ button {
 .verticaLnav .verticalLink {
     color: black !important;
     background-color: white !important;
-    padding: 4px 12px !important;
+    padding: 10px 12px !important;
     font-size: 15px !important;
 
 }
 
 .verticaLnav .verticalLink.active {
-    color: black !important;
-    background-color: white !important;
-    border-right: 2px solid #07543c;
+    color: white !important;
+    background-color: #07543cad !important;
 }
 
 .horizatanlPill .horizatalItem .horizatanlMenu.active {
-    color: black !important;
+    color: #4a4a4a  !important;
     background-color: white !important;
     border-bottom: 2px solid #07543c !important;
     margin-right: 12px;
@@ -2783,14 +2778,13 @@ button {
 }
 
 .horizatanlPill .horizatalItem .horizatanlMenu {
-    color: black !important;
+    color:#4a4a4a  !important;
     background-color: white !important;
-    font-size: 14px !important;
+    font-size: 15px !important;
     padding: 0px 10px 0px 10px !important;
     margin-right: 12px;
     margin-top: -14px !important;
-
-
+    font-weight: bold;
 
 }
 
@@ -2798,9 +2792,13 @@ button {
     color: white !important;
     background-color: #07543c !important;
     /* border-bottom:2px solid #07543c !important; */
-    font-size: 14px !important;
+    font-size: 15px !important;
     padding: 2px 10px 2px 10px !important;
     margin-top: -14px !important;
+    width: 300px;
+    font-weight: 500;
+
+    
 }
 
 .horizatanlMenu_link {
@@ -2814,7 +2812,7 @@ button {
     display: flex;
     align-items: center;
     width: 100%;
-    padding: 10px;
+    padding: 18px;
     font-size: 14px;
     color: #212529;
     text-align: left;
@@ -2928,11 +2926,12 @@ button {
     justify-content: space-between !important;
 }
 
-.transUnion_filter {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+
+
+.transUnion_filter .back_selectbtn{
+    text-align: right;
 }
+
 
 .transUnion_filter .filter_icon {
     display: flex;
@@ -2940,9 +2939,10 @@ button {
 }
 
 .transUnion_filter .selectbtton {
-    background-color: #004C4D;
-    color: white;
+    color: #004C4D;
+    border: 1px solid #004C4D;
     font-size: 13px;
+    margin-left: 13px;
 }
 
 .transUnion_filter .selectbttonnext {
@@ -2954,10 +2954,13 @@ button {
 
 .transUnion_filter .selectbtton:hover {
     color: white;
+    background-color: #07543cad;
+    border: 1px solid #07543cad;
 }
 
 .transUnion_filter .selectbttonnext:hover {
     color: white;
+    
 }
 
 .transUnion_filter .selectbtton:focus {
@@ -2996,12 +2999,12 @@ button {
 }
 
 
-#content #useraddress{
+#content #useraddress {
     line-height: 2px;
 }
 
-#content #useraddress #username{
-   /* text-transform:!important; */
+#content #useraddress #username {
+    /* text-transform:!important; */
 }
 
 #content #userdetails {
@@ -3023,7 +3026,7 @@ button {
 
 #content #letterfooter {
     line-height: 4px;
-    margin-top: 250px;
+    margin-top: 100px;
 
 }
 
@@ -3175,7 +3178,7 @@ button {
     color: #14684e !important;
 }
 
-.MuiSvgIcon-root .MuiSvgIcon-fontSizeMedium .MuiStepIcon-root .Mui-active{
+.MuiSvgIcon-root .MuiSvgIcon-fontSizeMedium .MuiStepIcon-root .Mui-active {
     color: #14684e !important;
 }
 
@@ -3203,8 +3206,10 @@ button {
     text-transform: lowercase;
 }
 
-.user_myaccount_doc{
-    
+.user_myaccount .details .personal_details {
+    color: gray;
+    padding: 12px;
+    text-transform: uppercase;
 }
 
 .user_myaccount .documents {
@@ -3232,14 +3237,14 @@ button {
 }
 
 
-.myaccount_faq{
+.myaccount_faq {
     margin-top: 50px;
 }
-.myaccount_faq .faq{
+
+.myaccount_faq .faq {
     color: gray;
     padding: 12px;
 }
-
 
 .myaccount_faq .accordion-button {
     font-size: 14px !important;
@@ -3249,9 +3254,10 @@ button {
     background-color: #053a29b8 !important;
     border: #053a29b8 !important;
 }
-.browser{
-    background-color:#bd8f04a8 !important;
-    border: #bd8f04a8 !important; 
+
+.browser {
+    background-color: #bd8f04a8 !important;
+    border: #bd8f04a8 !important;
     color: white !important;
     font-size: 17px;
     width: 134px;
@@ -3267,155 +3273,534 @@ button {
     height: 180px;
     border-color: gray;
 }
-.attachfile p{
- color: gray;
+
+.attachfile p {
+    color: gray;
 }
 
-.addressCard{
-   color: #053a29b8;
-   font-size: 40px;
-   margin-right: 9px;
+.addressCard {
+    color: #053a29b8;
+    font-size: 40px;
+    margin-right: 9px;
 }
 
-.filenamediv{
+.filenamediv {
     margin-top: 47px;
     margin-bottom: 20px;
 }
-.checkcircle{
+
+.checkcircle {
     color: #2f8368b8;
     font-size: 31px;
     margin-right: 8px;
 }
 
-.myaccount .documents .table .viewbtn{
-   
-}
-.myaccount .documents .table .viewbtn:hover{
+.myaccount .documents .table .viewbtn {}
+
+.myaccount .documents .table .viewbtn:hover {
     color: green;
     cursor: pointer;
 }
 
-.imgModal .modal-content{
+.imgModal .modal-content {
     width: auto !important;
     height: auto !important;
 }
 
-.horizatanlPill{
+.horizatanlPill {
     display: flex;
     justify-content: end;
 }
 
-@media only screen and (max-width: 1024px) and (min-width: 768px)  {
-    body{padding-bottom: 20em;}
-    .hero-text{left: 35%;}
-    .hero-text h1 {font-size: 35px;line-height: 60px;}
-    .signupBtn{margin-left: 13px;}
-    .verticaLnav {margin-bottom: 30px !important;}
-    .profileDropdown .dropdown-menu {transform: translateX(0px);padding-left: 20px;}
-    .horizatanlPill {display: flex;justify-content: start !important;    flex-wrap: inherit !important;}
+.paymentInfo {
+    margin-top: 36px;
+}
+
+
+.paymentInfo .table .payment_info {
+    padding: 12px;
+    color: gray;
+}
+
+.paymentInfo .table .paymentDetails {
+    text-align: left;
+    padding: 12px;
+    font-weight: bold;
+}
+
+.paymentInfo .table .paymentValue {
+    text-align: left;
+    padding: 12px;
+}
+
+
+
+@media only screen and (max-width: 767px) {
+
+    .user_myaccount .details {
+        width: 100%;
+        font-size: 13px;
+    }
+
+    .user_myaccount .documents {
+        width: 100%;
+        font-size: 13px;
+    }
+
+
+}
+
+@media only screen and (max-width: 1024px) and (min-width: 768px) {
+    .user_myaccount .details {
+        width: 741px;
+        font-size: 13px;
+    }
+
+    .user_myaccount .documents {
+        width: 741px;
+        font-size: 13px;
+    }
+
+}
+
+
+
+
+@media only screen and (max-width: 1024px) and (min-width: 768px) {
+    body {
+        padding-bottom: 20em;
+    }
+
+    .hero-text {
+        left: 35%;
+    }
+
+    .hero-text h1 {
+        font-size: 35px;
+        line-height: 60px;
+    }
+
+    .signupBtn {
+        margin-left: 13px;
+    }
+
+    .verticaLnav {
+        margin-bottom: 30px !important;
+    }
+
+    .profileDropdown .dropdown-menu {
+        transform: translateX(0px);
+        padding-left: 20px;
+    }
+
+    .horizatanlPill {
+        display: flex;
+        justify-content: start !important;
+        flex-wrap: inherit !important;
+    }
 }
 
 
 @media screen and (max-width: 767px) {
-    body{padding-bottom: 45em;}
-    .hero-text{left: 35%;} 
-    .hero-text h1 {font-size: 35px; }
-    .modul_content .account_feature{ padding: 0px 80px 0px 80px;}
-    .signupBtn{margin-left: 12px;}
-    .creditItem .disputebox{padding: 25px;}
-    .horizatanlPill .horizatalItem_button .horizatanlMenu_button{margin-top: 8px !important;}
-    .disputebox .nav{margin-bottom: 25px;}
-    .horizatanlPill {display: flex;justify-content: center;}
-    .creditItem{height: auto;}
-    .creditItem .filter_text{padding-left: 0px;}
-    .verticaLnav .verticalLink {border-bottom: 2px solid #07543c;width: 30%;border-right: none !important;}
-    .verticaLnav .verticalLink.active{ border-bottom: 2px solid #07543c !important;}
-    .accountstatus{display: block; width: 100%; padding-bottom: 10px;margin-top: 15px;}
-    #v-pills-tab button{margin-bottom: 15px;    width: 100%;}
-    .verticaLnav{flex-direction: initial !important;}
-    .profileDropdown .dropdown-menu {transform: translateX(0px);padding-left: 20px;}
-    .modul_content .account_feature li {width: 100%;margin-left: 0px !important;}
-    .modul_content .account_feature {padding: 0px 40px 0px 40px;justify-content: start;}
-    .horizatanlPill .horizatalItem .horizatanlMenu{padding: 0px 5px 0px 5px !important;}
-    .accordian_content .accordion-body {    padding: 1rem 0rem;}
-    .creditItem .filter{justify-content: center;}
-    .footercol2, .footerProduct{justify-content: start;}
-  }
+    body {
+        padding-bottom: 47em;
+    }
 
-  @media screen and (max-width: 320px){
-    .headerlogo { width: 150px;}
-    .disputebox .nav{margin-bottom: 0px;}
-    .horizatanlPill .horizatalItem .horizatanlMenu{margin-top: 0px !important; margin-right: 0px !important; margin-bottom: 15px;}
-    .Login_form, .contact_section{padding: 25px 10px;}
-    .contactus_form{padding: 0px;}
-    .footercompanylist{padding: 0px;}
-  }
+    .hero-text {
+        left: 35%;
+    }
+
+    .hero-text h1 {
+        font-size: 35px;
+    }
+
+    .modul_content .account_feature {
+        padding: 0px 80px 0px 80px;
+    }
+
+    .signupBtn {
+        margin-left: 12px;
+    }
+
+    .creditItem .disputebox {
+        padding: 25px;
+    }
+
+    .horizatanlPill .horizatalItem_button .horizatanlMenu_button {
+        margin-top: 8px !important;
+    }
+
+    .disputebox .nav {
+        margin-bottom: 25px;
+    }
+
+    .horizatanlPill {
+        display: flex;
+        justify-content: center;
+    }
+
+    .creditItem {
+        height: auto;
+    }
+
+    .creditItem .filter_text {
+        padding-left: 0px;
+    }
+
+    .verticaLnav .verticalLink {
+        border-bottom: 2px solid #07543c;
+        width: 30%;
+        border-right: none !important;
+    }
+
+    .verticaLnav .verticalLink.active {
+        border-bottom: 2px solid #07543c !important;
+    }
+
+    .accountstatus {
+        display: block;
+        width: 100%;
+        padding-bottom: 10px;
+        margin-top: 15px;
+    }
+
+    #v-pills-tab button {
+        margin-bottom: 15px;
+        width: 100%;
+    }
+
+    .verticaLnav {
+        flex-direction: initial !important;
+    }
+
+    .profileDropdown .dropdown-menu {
+        transform: translateX(0px);
+        padding-left: 20px;
+    }
+
+    .modul_content .account_feature li {
+        width: 100%;
+        margin-left: 0px !important;
+    }
+
+    .modul_content .account_feature {
+        padding: 0px 40px 0px 40px;
+        justify-content: start;
+    }
+
+    .horizatanlPill .horizatalItem .horizatanlMenu {
+        padding: 0px 5px 0px 5px !important;
+    }
+
+    .accordian_content .accordion-body {
+        padding: 1rem 0rem;
+    }
+
+    .creditItem .filter {
+        justify-content: center;
+    }
+
+    .footercol2,
+    .footerProduct {
+        justify-content: start;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    .headerlogo {
+        width: 150px;
+    }
+
+    .disputebox .nav {
+        margin-bottom: 0px;
+    }
+
+    .horizatanlPill .horizatalItem .horizatanlMenu {
+        margin-top: 0px !important;
+        margin-right: 0px !important;
+        margin-bottom: 15px;
+    }
+
+    .Login_form,
+    .contact_section {
+        padding: 25px 10px;
+    }
+
+    .contactus_form {
+        padding: 0px;
+    }
+
+    .footercompanylist {
+        padding: 29px;
+    }
+}
 
 
 
 
-  /* ============== purchase_plan modal css============ */
-  .modal-backdrop.show {
+/* ============== purchase_plan modal css============ */
+.modal-backdrop.show {
     opacity: 0.90 !important;
 }
-  .purchase_plan .modal-content {
+
+.purchase_plan .modal-content {
     /* background: #7bfeca; */
     border-radius: 0.5rem;
-  }
-  .purchase_plan .modal-body{
+}
+
+.purchase_plan .modal-body {
     border: 2px solid #07543c;
     box-shadow: 0px 0px 10px 2px #2e542e;
-  }
- 
- 
-  .purchase_btn{
+}
+
+
+.purchase_btn {
     display: flex;
     justify-content: center;
     padding: 14px;
-  }
-  .purchase_btn button{
+}
+
+.purchase_btn button {
     background: #198754;
     border: none;
     color: #fff;
     padding: 8px 70px;
-  }
+}
 
-  .user_history .nav{
+.user_history .nav {
     justify-content: space-evenly;
-  }
-  .user_history .nav-tabs {
+}
+
+.user_history .nav-tabs {
     border-bottom: none;
 }
-.user_history .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
-       color: #14684e !important;
+
+.user_history .nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link.active {
+    color: #14684e !important;
     background-color: #fff !important;
     border-color: transparent !important;
     font-weight: 600;
 }
-.user_history .nav-link{
+
+.user_history .nav-link {
     color: #0d0e0e !important;
     font-weight: 600;
 }
+
 .user_history .nav-tabs .nav-link:hover {
-    border: transparent !important;
+    /* border: none !important; */
     border-color: transparent !important;
     color: #14684e !important;
+
+
 }
-.personal_info .user_name{
+
+.personal_info .user_name {
     font-size: 19px;
 }
-.personal_info .user_email{
+
+.personal_info .user_email {
     font-size: 15px;
 }
-.personal_info .user_address{
+
+.personal_info .user_address {
     padding-top: 12px;
     font-size: 15px;
     color: #454242;
 }
-.proof_info svg{
+
+.proof_info svg {
     color: #bfbebe;
 }
-.proof_info span a{
+
+.proof_info span a {
     color: green;
     text-decoration: none;
+}
+
+.custom-file-input {
+    color: transparent;
+    width: 99px;
+
+}
+
+.custom-file-input::-webkit-file-upload-button {
+    visibility: hidden;
+
+}
+
+.custom-file-input::before {
+    content: 'BROWSER';
+    color: white;
+    display: inline-block;
+    background: #bd8f04a8;
+    border: 1px #bd8f04a8;
+    padding: 10px;
+    outline: none;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    cursor: pointer;
+    font-size: 17px;
+}
+
+
+
+._dispute_heading {
+    display: none;
+}
+
+@media only screen and (max-width: 991px) and (min-width:280px) {
+
+    ._dispute_heading {
+        display: block;
+        text-align: center;
+        margin-top: 12px;
+    }
+
+    ._dispute_heading ._dispute_heading_title {
+        font-size: 16px;
+        color: gray;
+    }
+
+    .selectdipute_header .dispute_heading {
+        display: flex;
+        font-size: 16px;
+        align-items: center;
+        justify-content: flex-start;
+        height: 100%;
+        margin-top: 4px;
+        font-weight: bold;
+    }
+}
+
+
+@media only screen and (max-width: 375px) and (min-width:280px) {
+    .transUnion_filter {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .transUnion_filter .filter_icon {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .back_selectbtn {
+        text-align: center;
+    }
+
+    .selectdipute_header .dispute_heading {
+        display: flex;
+        font-size: 16px;
+        align-items: center;
+        justify-content: flex-start;
+        height: 100%;
+        margin-top: 4px;
+        font-weight: bold;
+    }
+
+
+}
+
+.credit_checkbox .form-check .mycheckbox {
+    margin-top: 10px !important;
+    margin-right: 10px !important;
+    margin-left: 0px !important;
+}
+
+.credit_checkbox .form-check .mycheckbox1 {
+    margin-top: 10px !important;
+    margin-right: 10px !important;
+    margin-left: 0px !important;
+}
+
+.doucument_btn {
+    height: 47px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+/* @media only screen and (max-width: 960px) and (min-width:600px) {
+  
+    .smart_item_content {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        height: 478px;
+    }
+
+} */
+
+
+.doucument_img {
+    width: auto;
+    height: auto;
+}
+
+.doucument_img img {
+    height: auto;
+    width: 100%;
+}
+
+.imguload_note {
+    font-size: 12px;
+    margin-top: 7px;
+    color: gray;
+}
+
+.crate_dispute_letter_link {
+    color: #163E24;
+    text-decoration: none;
+    font-size: 12px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.crate_dispute_letter_link:hover {
+    color: white;
+    text-decoration: none;
+    font-size: 12px;
+    text-align: center;
+    font-weight: bold;
+
+}
+
+.create_dispute_letter_button {
+    width: 100%;
+    padding: 9px;
+    border: 0.1px solid #163e2447;
+    box-shadow: rgb(59 56 42) 0px 1px 5px -1px;
+}
+
+.create_dispute_letter_button:hover {
+    width: 100%;
+    padding: 9px;
+    border: 0.1px solid #163e2447;
+    box-shadow: rgb(59 56 42) 0px 1px 5px -1px;
+    background-color: #163E24;
+}
+
+
+@media only screen and (max-width: 767px) and (min-width:280px) {
+
+    .history_graph_sec {
+        display: none;
+    }
+
+}
+
+.disputebox_heading{
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 20px;
+    text-transform: capitalize;
+    color: gray;
+}
+.disputebox .dispute_divider{
+    margin-top: 32px;
+    margin-bottom: 32px;
 }

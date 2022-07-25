@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
+import { Link } from 'react-router-dom'
 import GaugeChart from 'react-gauge-chart'
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
@@ -18,12 +19,10 @@ import {
 
 
 export default function Graph() {
-  var todayDate = new Date()
-  var fulldate = todayDate.getDate() + "/" + (todayDate.getMonth() + 1) + "/" + todayDate.getFullYear()
+  var todayDate = new Date().toLocaleDateString()
+  var fulldate = todayDate
 
 
-  
- 
   const equ = JSON.parse(sessionStorage.getItem("EQUIFAX"));
   const trans = JSON.parse(sessionStorage.getItem("TRANSUNION"));
   const expri = JSON.parse(sessionStorage.getItem("EXPERIAN"));
@@ -47,63 +46,63 @@ export default function Graph() {
   const [idb64, setIdb64] = useState();
   const [addressb64, setAddressb64] = useState();
 
-  
 
   //************** */ get all doc api********** 
-  useEffect(() => {
-    axios.get(`https://www.mycreditsensei.com:5000/all_doc?trackingToken=${trackingToken}`)
-      .then((response) => {
-        if (response.data.statusCode === 200) {
-          var addressurl = response.data.statusMsg.proof_of_address;
-          var idurl = response.data.statusMsg.proof_of_id;
-          if (addressurl) {
-            var addressurl = response.data.statusMsg.proof_of_address;
-            var xhr = new XMLHttpRequest();
-            xhr.onload = function () {
-              var codes = new Uint8Array(xhr.response);
-              var binary = '';
-              var len = codes.byteLength;
-              for (var i = 0; i < len; i++) {
-                binary += String.fromCharCode(codes[i]);
-              }
-              if (binary) {
-                var b64 = btoa(binary);
-                  setAddressb64(b64)
-              }
-            };
-            xhr.open('GET', addressurl);
-            xhr.responseType = 'arraybuffer';
-            xhr.send();
-          }
-          if (idurl) {
-            var idurl = response.data.statusMsg.proof_of_id;
-            var xhr1 = new XMLHttpRequest();
-            xhr1.onload = function () {
-              var codes = new Uint8Array(xhr1.response);
-              var binary = '';
-              var len = codes.byteLength;
-              for (var i = 0; i < len; i++) {
-                binary += String.fromCharCode(codes[i]);
-              }
-              if (binary) {
-                var b64 = btoa(binary);
-                setIdb64(b64)
-              }
-            };
-            xhr1.open('GET', idurl);
-            xhr1.responseType = 'arraybuffer';
-            xhr1.send();
-          }
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }, [])
+  // useEffect(() => {
+  //   axios.get(`https://www.mycreditsensei.com:5000/all_doc?trackingToken=${trackingToken}`)
+  //     .then((response) => {
+  //       console.log("response",response)
+  //       if (response.data.statusCode === 200) {
+  //         var addressurl = response.data.statusMsg.proof_of_address;
+  //         var idurl = response.data.statusMsg.proof_of_id;
+  //         if (addressurl) {
+  //           var addressurl = response.data.statusMsg.proof_of_address;
+  //           var xhr = new XMLHttpRequest();
+  //           xhr.onload = function () {
+  //             var codes = new Uint8Array(xhr.response);
+  //             var binary = '';
+  //             var len = codes.byteLength;
+  //             for (var i = 0; i < len; i++) {
+  //               binary += String.fromCharCode(codes[i]);
+  //             }
+  //             if (binary) {
+  //               var b64 = btoa(binary);
+  //               setAddressb64(b64)
+  //             }
+  //           };
+  //           xhr.open('GET', addressurl);
+  //           xhr.responseType = 'arraybuffer';
+  //           xhr.send();
+  //         }
+  //         if (idurl) {
+  //           var idurl = response.data.statusMsg.proof_of_id;
+  //           var xhr1 = new XMLHttpRequest();
+  //           xhr1.onload = function () {
+  //             var codes = new Uint8Array(xhr1.response);
+  //             var binary = '';
+  //             var len = codes.byteLength;
+  //             for (var i = 0; i < len; i++) {
+  //               binary += String.fromCharCode(codes[i]);
+  //             }
+  //             if (binary) {
+  //               var b64 = btoa(binary);
+  //               setIdb64(b64)
+  //             }
+  //           };
+  //           xhr1.open('GET', idurl);
+  //           xhr1.responseType = 'arraybuffer';
+  //           xhr1.send();
+  //         }
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log(err)
+  //     })
+  // }, [])
 
 
   useEffect(async () => {
-    //************** */ transuniondisputeDate**********
+
     try {
       const article = {
         "trackingToken": trackingToken,
@@ -164,8 +163,6 @@ export default function Graph() {
               .catch((error) => {
                 console.log("error", error)
               })
-          } else {
-            console.log("nothing")
           }
         })
         .catch((error) => {
@@ -245,11 +242,8 @@ export default function Graph() {
       {
         label: `Send letter by ${transunionSentDate}`,
 
-      },
-      {
-        label: "Wait for Result",
-
       }
+
 
     ];
 
@@ -263,9 +257,9 @@ export default function Graph() {
       url: TRANSUNION_SENT_LETTER,
       data: { "trackingToken": trackingToken, "transunion_sent_date": fulldate, "addressProofB64": addressb64, "idProofB64": idb64 },
       success: function (response) {
-        if (response.statusMsg === "Dispute letter already sent") {
+        if (response.statusMsg === "Please Create dispute letter first") {
           setLoading(false)
-          toast.error('Dispute letter already sent', {
+           toast.error('Create dispute letter', {
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: true,
@@ -279,7 +273,7 @@ export default function Graph() {
 
         if (response.statusCode === 400) {
           setLoading(false)
-          toast.error('Please upload your id proof or address proof', {
+           toast.error('Please upload your id proof or address proof', {
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: true,
@@ -293,7 +287,7 @@ export default function Graph() {
         }
 
         if (response.statusCode === 200) {
-          toast.success('Dispute letter send successfully', {
+            toast.success('Dispute letter send successfully', {
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: true,
@@ -344,12 +338,7 @@ export default function Graph() {
       {
         label: `Send letter by ${euqifaxSentDate}`,
 
-      },
-      {
-        label: "Wait for Result",
-
       }
-
     ];
 
 
@@ -363,9 +352,9 @@ export default function Graph() {
       data: { "trackingToken": trackingToken, "equifax_sent_date": fulldate, "addressProofB64": addressb64, "idProofB64": idb64 },
       success: function (response) {
         console.log("response sent letter", response)
-        if (response.statusMsg === "Dispute letter already sent") {
+        if (response.statusMsg === "Please Create dispute letter first") {
           setLoadingEqui(false)
-          toast.error('Dispute letter already sent', {
+          toast.error('Create dispute letter', {
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: true,
@@ -380,7 +369,7 @@ export default function Graph() {
 
         if (response.statusCode === 400) {
           setLoadingEqui(false)
-          toast.error('Please upload your id proof or address proof', {
+           toast.error('Please upload your id proof or address proof', {
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: true,
@@ -394,7 +383,7 @@ export default function Graph() {
         }
 
         if (response.statusCode === 200) {
-          toast.success('Dispute letter send successfully', {
+            toast.success('Dispute letter send successfully', {
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: true,
@@ -450,10 +439,6 @@ export default function Graph() {
       {
         label: `Send letter by ${experianSentDate}`,
 
-      },
-      {
-        label: "Wait for Result",
-
       }
     ];
   }
@@ -465,10 +450,10 @@ export default function Graph() {
       url: EXPERIAN_SENT_LETTER,
       data: { "trackingToken": trackingToken, "experian_sent_date": fulldate, "addressProofB64": addressb64, "idProofB64": idb64 },
       success: function (response) {
-        console.log(response)
-        if (response.statusMsg === "Dispute letter already sent") {
+       
+        if (response.statusMsg === "Create dispute letter") {
           setLoadingExp(false)
-          toast.error('Dispute letter already sent', {
+          toast.error('Please Create dispute letter first', {
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: true,
@@ -497,7 +482,7 @@ export default function Graph() {
         }
 
         if (response.statusCode === 200) {
-          toast.success('Dispute letter send successfully', {
+           toast.success('Dispute letter send successfully', {
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: true,
@@ -552,32 +537,34 @@ export default function Graph() {
                       <Stepper activeStep={tranStep} orientation="vertical" className='_step'>
                         {transteps.map((step, index) => (
                           <Step key={step.label}>
-                            <StepLabel>
+                            <StepLabel className='demo'>
                               {step.label}
                             </StepLabel>
                           </Step>
+
                         ))}
                       </Stepper>
                     </Box>
                   </div>
-
+                  <Link to='/TransunionDispute' className='crate_dispute_letter_link'><div className='create_dispute_letter_button'>CREATE DISPUTE LETTER</div></Link>
                   {loading ?
                     <button className='homeDisputeBtn'>Loading........</button>
                     :
-                    tranStep === 0 && waitForResult === false ?
-                      <button className='homeDisputeBtn'>CREATE DISPUTE LETTER</button>
-                      : tranStep !== 0 && waitForResult === false ?
-                        <button className='homeDisputeBtn' onClick={sendTransLetter}>MARK LETTER AS SENT</button>
-                        :
-                        <div disabled></div>
+                    <>
+                      <button className='homeDisputeBtn' onClick={sendTransLetter}>SENT DISPUTE LETTER</button>
+                    </>
+
+                    // tranStep === 0 && waitForResult === false ?
+                    //   <Link to='/TransunionDispute' className='crate_dispute_letter_link'><div className='create_dispute_letter_button'>CREATE DISPUTE LETTER</div></Link>
+                    //   : tranStep !== 0 && waitForResult === false ?
+                    //     <button className='homeDisputeBtn' onClick={sendTransLetter}>MARK LETTER AS SENT</button>
+                    //     :
+                    //     <div disabled></div>
                   }
 
                 </div>
               </div>
             </Col>
-
-
-
 
 
             <Col lg={4} md={6} className="d-flex justify-content-center mb-4">
@@ -605,7 +592,7 @@ export default function Graph() {
                       <Stepper activeStep={equiStep} orientation="vertical" className='_step'>
                         {equiSteps.map((step, index) => (
                           <Step key={step.label}>
-                            <StepLabel>
+                            <StepLabel className='demo'>
                               {step.label}
                             </StepLabel>
                           </Step>
@@ -613,25 +600,24 @@ export default function Graph() {
                       </Stepper>
                     </Box>
                   </div>
-
+                  <Link to='/equifaxdispute' className='crate_dispute_letter_link'><div className='create_dispute_letter_button'>CREATE DISPUTE LETTER</div></Link>
                   {loadingEqui ?
                     <button className='homeDisputeBtn'>Loading........</button>
-                    :
-                    equiStep === 0 && waitForResultEqui === false ?
-                      <button className='homeDisputeBtn'>CREATE DISPUTE LETTER</button>
-                      : equiStep !== 0 && waitForResultEqui === false ?
-                        <button className='homeDisputeBtn' onClick={sendEquiLetter}>MARK LETTER AS SENT</button>
-                        :
-                        <div disabled></div>
+                    : <>
+                      <button className='homeDisputeBtn' onClick={sendEquiLetter}>SENT DISPUTE LETTER</button>
+                    </>
+                    // equiStep === 0 && waitForResultEqui === false ?
+                    //   <Link to='/equifaxdispute' className='crate_dispute_letter_link'><div className='create_dispute_letter_button'>CREATE DISPUTE LETTER</div></Link>
+                    //   : equiStep !== 0 && waitForResultEqui === false ?
+                    //     <button className='homeDisputeBtn' onClick={sendEquiLetter}>MARK LETTER AS SENT</button>
+                    //     :
+                    //     <div disabled></div>
                   }
 
 
                 </div>
               </div>
             </Col>
-
-
-
 
 
             <Col lg={4} md={12} className="d-flex justify-content-center mb-4">
@@ -655,11 +641,10 @@ export default function Graph() {
                 <div>
                   <div className='m-4'>
                     <Box sx={{ maxWidth: 400 }}>
-
                       <Stepper activeStep={expriStep} orientation="vertical" className='_step'>
                         {expriSteps.map((step, index) => (
                           <Step key={step.label}>
-                            <StepLabel>
+                            <StepLabel className='demo'>
                               {step.label}
                             </StepLabel>
                           </Step>
@@ -668,19 +653,21 @@ export default function Graph() {
 
                     </Box>
                   </div>
-
+                  <Link to='/experiandispute' className='crate_dispute_letter_link'><div className='create_dispute_letter_button'>CREATE DISPUTE LETTER</div></Link>
                   {loadingExp ?
-
                     <button className='homeDisputeBtn'>Loading........</button>
                     :
-                    expriStep === 0 && waitForResultExp === false ?
-                      <button className='homeDisputeBtn'>CREATE DISPUTE LETTER</button>
-                      : expriStep !== 0 && waitForResultExp === false ?
-                        <button className='homeDisputeBtn' onClick={sendExpriLetter}>MARK LETTER AS SENT</button>
-                        :
-                        <div disabled></div>
-                  }
+                    <>
+                      <button className='homeDisputeBtn' onClick={sendExpriLetter}>SENT DISPUTE LETTER</button>
+                    </>
 
+                    // expriStep === 0 && waitForResultExp === false ?
+                    // <Link to='/experiandispute' className='crate_dispute_letter_link'><div className='create_dispute_letter_button'>CREATE DISPUTE LETTER</div></Link>
+                    //   : expriStep !== 0 && waitForResultExp === false ?
+                    //     <button className='homeDisputeBtn' onClick={sendExpriLetter}>MARK LETTER AS SENT</button>
+                    //     :
+                    //     <div disabled></div>
+                  }
                 </div>
               </div>
 
@@ -688,9 +675,6 @@ export default function Graph() {
           </Row>
         </Container>
       </section>
-
-
-
 
 
       <ToastContainer

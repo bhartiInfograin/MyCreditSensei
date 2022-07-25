@@ -12,10 +12,10 @@ export default function SmartModule() {
             <Col lg={6}  md={6} sm={6}>
               <div className='smart_item_content '>
                 <h2 className='smart_item_title'>Professional Letters</h2>
-                <p className='smart_item_text'>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ad nobis, fugiat, quibusdam est ullam itaque accusamus saepe architecto tempore culpa laboriosam praesentium recusandae et labore corrupti, rerum dolorum consequatur vel.
+                <p className='smart_item_text'>Letters are far more effective at getting accounts permanently deleted than online disputes. MyCredit Sensei's letter generator helps you create effective disputes based on consumer protection laws.
                 </p>
                 <h2 className='smart_item_title mt-2'>Track Your Results</h2>
-                <p className='smart_item_text'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima cupiditate tempora laborum quam? Modi ut minima molestias, repellendus minus aperiam ex necessitatibus eos mollitia culpa accusamus nihil distinctio. Odio, recusandae!
+                <p className='smart_item_text'>Every month MyCredit Sensei imports your new 3 bureau credit report and shows which accounts were deleted and your new credit scores. If an account wasn’t deleted, MyCredit Sensei will suggest a new strategy for additional disputes.
                 </p>
               </div>
             </Col>
