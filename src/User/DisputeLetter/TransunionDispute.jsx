@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Container, Row, Col, Accordion, Table, Button, Modal, Form } from 'react-bootstrap'
-import { FaSlidersH, FaPlusSquare } from 'react-icons/fa';
+import { FaPlusSquare } from 'react-icons/fa';
 import $ from 'jquery';
 import { ToastContainer, toast } from 'react-toastify';
-import DisputeStepper from "../DisputeLetter/DisputeStepper"
 import jsPDF from 'jspdf';
 import axios from 'axios';
 import { TRANSUNION_DISPUTE_LETTER } from "../../Url";
@@ -44,6 +43,11 @@ export default function SelectDisputeAC() {
     const [individualName, setIndividualName] = useState();
     const [inquiryDate, setInquiryDate] = useState();
     const [disputeReasonError, setDisputeReasonError] = useState(false);
+    const [inquiry_custom, setInquiry_custom] = useState(false);
+    const [inquiry_suggested_reason, setInquiry_suggested_reason] = useState(false);
+
+
+
 
     let Navigate = useNavigate()
     var socialSecurityNumber = bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.SocialSecurityNumber
@@ -184,12 +188,16 @@ export default function SelectDisputeAC() {
                 document.getElementsByClassName("mycheckbox1")[inquiryValue].checked = false
             }
 
-            const inquiryReason = document.getElementById("inquiryReason");
+            const inquiry_custom = document.getElementById("inquiry_custom")
+            const inquiry_suggested_reason = document.getElementById("inquiry_suggested_reason");
             const modalsubscriberName = document.getElementsByClassName("modalsubscriberName")[0];
             const modalindustryCode = document.getElementsByClassName("modalindustryCode")[0];
             const modalinquiryDate = document.getElementsByClassName("modalinquiryDate")[0];
+            var inquiry_reasons = '';
 
-        
+
+    
+
             const customReason = document.getElementById("customReason")
             const modalaccountName = document.getElementsByClassName("modalaccountName")[0]
             const modalaccountType = document.getElementsByClassName("modalaccountType")[0]
@@ -228,27 +236,36 @@ export default function SelectDisputeAC() {
                 }
             }
 
-            if (inquiryReason) {
-                if (inquiryReason.value) {
 
-                    var NewObject_inquiry = {
-                        "inquiryReason": inquiryReason.value,
-                        "subscriberName": modalsubscriberName.innerText,
-                        "industryCode": modalindustryCode.innerText,
-                        "inquiryDate": modalinquiryDate.innerText
-                    }
-
-                    if (NewObject_inquiry) {
-                        inquiryObject.push(NewObject_inquiry)
-                        sessionStorage.setItem("InquiryObject", JSON.stringify(inquiryObject))
-                        setShowInquire(false);
-
-                    }
-                } else {
-                    console.log("inquiryReasond elsssss", inquiryReason.value)
-                    setDisputeReasonError(true);
+            if (inquiry_suggested_reason || inquiry_custom ) {
+             
+                if (inquiry_custom) {
+                    inquiry_reasons = inquiry_custom.value
                 }
+                if (inquiry_suggested_reason) {
+                    inquiry_reasons = inquiry_suggested_reason.innerText
+                }
+                var NewObject_inquiry = {
+                    "inquiryReason": inquiry_reasons,
+                    "subscriberName": modalsubscriberName.innerText,
+                    "industryCode": modalindustryCode.innerText,
+                    "inquiryDate": modalinquiryDate.innerText
+                }
+
+    
+
+                if (NewObject_inquiry) {
+                    inquiryObject.push(NewObject_inquiry)
+                    sessionStorage.setItem("InquiryObject", JSON.stringify(inquiryObject))
+                    setShowInquire(false);
+
+                }
+
+
+            } else {
+                setDisputeReasonError(true);
             }
+
         }
     }, [])
 
@@ -382,6 +399,18 @@ export default function SelectDisputeAC() {
         }
     }
 
+    const showInquirycustom = (e) => {
+        const suggestion = e.target.value
+        switch (suggestion) {
+            case 'inquiry_suggested_reason': setInquiry_suggested_reason(true);
+                setInquiry_custom(false);
+                break;
+            case 'inquiry_custom_reason': setInquiry_custom(true);
+                setInquiry_suggested_reason(false);
+                break;
+        }
+    }
+
 
 
     const sendEmail = () => {
@@ -456,7 +485,7 @@ export default function SelectDisputeAC() {
                     const article = {
                         trackingToken: TrackingToken,
                         transunion_create_date: _disputeDate,
-                        account_pdf :demo,
+                        account_pdf: demo,
                     };
 
                     axios.post(TRANSUNION_DISPUTE_LETTER, article)
@@ -503,7 +532,7 @@ export default function SelectDisputeAC() {
     const sendInquiryEmail = () => {
         var inquirymailbody = []
         const InquiryObject = JSON.parse(sessionStorage.getItem("InquiryObject"));
-  
+
         if (InquiryObject) {
             InquiryObject.map((e) => {
                 if (e.inquiryReason) {
@@ -567,7 +596,7 @@ export default function SelectDisputeAC() {
                     const article = {
                         trackingToken: TrackingToken,
                         transunion_create_date: _disputeDate,
-                        inquiry_pdf:demo,
+                        inquiry_pdf: demo,
                     };
 
                     axios.post(TRANSUNION_DISPUTE_LETTER, article)
@@ -1198,11 +1227,7 @@ export default function SelectDisputeAC() {
                         </Col>
 
 
-
-
                         <hr className='dispute_divider'></hr>
-
-
 
                         <Col lg={12} md={12}>
                             <p className='disputebox_heading'>Inquiry</p>
@@ -1357,9 +1382,6 @@ export default function SelectDisputeAC() {
                         </div>
 
                         <div className="reasonSelection">
-                            {disputeReasonError ? <p className='error' id='disputeReasonError'>*Select Dispute Reason </p>
-                                : <p></p>
-                            }
                             <Form.Label>Select Reason:</Form.Label>
                             <Form.Select aria-label="Default select example" size="sm" onChange={(e) => showcustom(e)}>
                                 <option>Suggested Reason</option>
@@ -1375,7 +1397,8 @@ export default function SelectDisputeAC() {
 
                             {custom ?
                                 <textarea className="form-control detailsReasons" id="customReason" placeholder=" Type your custom reason here"></textarea>
-                                : <div></div>}
+                                : <div></div>
+                            }
 
 
                             {never ?
@@ -1476,18 +1499,29 @@ export default function SelectDisputeAC() {
                         </div>
 
                         <div className="reasonSelection">
-                            {disputeReasonError ? <p className='error' id='disputeReasonError'>*Select Dispute Reason </p>
-                                : <p></p>
+
+                            <Form.Label>Select Reason:</Form.Label>
+                            <Form.Select aria-label="Default select example" size="sm" onChange={(e) => showInquirycustom(e)}>
+                                <option>Select your reason</option>
+                                <option value="inquiry_suggested_reason">Suggested Reason</option>
+                                <option value="inquiry_custom_reason" >Custom Reason</option>
+                            </Form.Select>
+
+
+                            {inquiry_custom ?
+                                <textarea className="form-control detailsReasons" id="inquiry_custom" placeholder=" Type your custom reason here"></textarea>
+                                : <div></div>
                             }
-                            <Form.Label>Type your reason here:</Form.Label>
-                            <Form.Control
-                                as="textarea"
-                                id="inquiryReason"
-                                rows={3}
-                                className="mb-3 validate"
-                                placeholder="Your Reason"
-                                required
-                            />
+
+
+                            {inquiry_suggested_reason ?
+                                <div className='detailsReasons' id="inquiry_suggested_reason">
+                                    I request that you investigate above inquiry on my credit report to determine who authorized the inquiry. If you find my allegation to be true once your investigation is complete, please remove the inquiry and send me an updated copy of my credit report at the address listed above.<br />
+                                    If you find the inquiry referenced above to be valid, please send me a description of the procedures used in your investigation within 15 business days of completing the investigation.
+                                </div>
+                                :
+                                <div></div>
+                            }
                         </div>
                     </section>
                 </Modal.Body>

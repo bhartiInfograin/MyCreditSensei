@@ -315,7 +315,8 @@ export default function UserHome() {
           </Col>
         </Row>
       </Container>
-      <section className='mb-5'>
+
+      {/* <section className='mb-5'>
         <Container>
           <Row className='d-flex justify-content-center user_history'>
             <Col lg={10} sm={12}>
@@ -354,7 +355,8 @@ export default function UserHome() {
             </Col>
           </Row>
         </Container>
-      </section>
+      </section> */}
+
       {/* <Footer /> */}
       <UserFooter />
       {/* =====plan purchase popup start======= */}

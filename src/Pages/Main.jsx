@@ -17,8 +17,6 @@ export default function Main() {
                 <Route path="/princing" element={<Pricing />}></Route>
                 <Route path="/termscondition" element={<Terms_Condition />}></Route>
                 <Route path="/privacypolicy" element={<PrivacyPolicy />}></Route> 
-          
-
             </Routes>
           
 

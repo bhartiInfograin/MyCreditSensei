@@ -31,7 +31,6 @@ export default function Auth() {
                 <Route path="/forgotpwd" element={<Forgotpwd/>}></Route>
                 <Route path="/resetpassword" element={<ResetPwd/>}></Route>
                 <Route path="/emailrecovery" element={<EmailRecovery/>}></Route>
-                
             </Routes>
         </>
     )

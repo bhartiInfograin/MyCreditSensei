@@ -255,7 +255,7 @@ export default function Graph() {
     $.ajax({
       type: "POST",
       url: TRANSUNION_SENT_LETTER,
-      data: { "trackingToken": trackingToken, "transunion_sent_date": fulldate, "addressProofB64": addressb64, "idProofB64": idb64 },
+      data: { "trackingToken": trackingToken, "transunion_sent_date": fulldate},
       success: function (response) {
         if (response.statusMsg === "Please Create dispute letter first") {
           setLoading(false)
@@ -349,12 +349,12 @@ export default function Graph() {
     $.ajax({
       type: "POST",
       url: EQUIFAX_SENT_LETTER,
-      data: { "trackingToken": trackingToken, "equifax_sent_date": fulldate, "addressProofB64": addressb64, "idProofB64": idb64 },
+      data: { "trackingToken": trackingToken, "equifax_sent_date": fulldate},
       success: function (response) {
         console.log("response sent letter", response)
         if (response.statusMsg === "Please Create dispute letter first") {
           setLoadingEqui(false)
-          toast.error('Create dispute letter', {
+          toast.error('Create dispute letter', {  
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: true,
@@ -394,7 +394,7 @@ export default function Graph() {
             theme: "colored"
           });
           window.location.reload()
-          setLoadingEqui(false)
+          setLoading(false)
         }
 
 
@@ -448,7 +448,7 @@ export default function Graph() {
     $.ajax({
       type: "POST",
       url: EXPERIAN_SENT_LETTER,
-      data: { "trackingToken": trackingToken, "experian_sent_date": fulldate, "addressProofB64": addressb64, "idProofB64": idb64 },
+      data: { "trackingToken": trackingToken, "experian_sent_date": fulldate},
       success: function (response) {
        
         if (response.statusMsg === "Create dispute letter") {
@@ -493,7 +493,7 @@ export default function Graph() {
             theme: "colored"
           });
           window.location.reload()
-          setLoadingExp(false)
+          setLoading(false)
         }
 
 

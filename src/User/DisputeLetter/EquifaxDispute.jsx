@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Container, Row, Col, Accordion, Table, Button, Modal, Form } from 'react-bootstrap'
-import { FaSlidersH, FaPlusSquare } from 'react-icons/fa';
+import { FaPlusSquare } from 'react-icons/fa';
 import $ from 'jquery';
-import DisputeStepper from "../DisputeLetter/DisputeStepper"
 import { ToastContainer, toast } from 'react-toastify';
 import jsPDF from 'jspdf';
 import axios from 'axios';
@@ -15,6 +14,7 @@ export default function EquifaxDispute() {
     const bundledata = JSON.parse(sessionStorage.getItem("BUNDLEDATA"));
     const TrackingToken = sessionStorage.getItem("TRACKINGTOKEN");
     const [count, setCount] = useState(0);
+    const [inquiryCount, setInquiryCount] = useState(0);
     const [show, setShow] = useState(false);
     const [showInquire, setShowInquire] = useState(false);
     const [showDispute, setShowDispute] = useState(false);
@@ -37,18 +37,18 @@ export default function EquifaxDispute() {
     const [openDate, setOpenDate] = useState()
     const [accountNumber, setAccountNumber] = useState()
     const [finish, setFinish] = useState(false)
-    const [progress, setProgress] = useState()
     const [subscriberName, setSubscriberName] = useState();
     const [industryCode, setIndustryCode] = useState();
     const [individualName, setIndividualName] = useState();
     const [inquiryDate, setInquiryDate] = useState();
+    const [disputeReasonError, setDisputeReasonError] = useState(false);
+    const [inquiry_custom, setInquiry_custom] = useState(false);
+    const [inquiry_suggested_reason, setInquiry_suggested_reason] = useState(false);
     let Navigate = useNavigate()
 
     var socialSecurityNumber = bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.SocialSecurityNumber
-    // var equifaxBorrowerName = bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.BorrowerName[2].Name.first + " " + bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.BorrowerName[0].Name.last
-    // var equifaxBorrowerAddress = bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.BorrowerAddress[2].CreditAddress
-    var transunionBorrowerName = bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.BorrowerName[0].Name.first + " " + bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.BorrowerName[0].Name.last
-    var transunionBorrowerAddress = bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.BorrowerAddress[0].CreditAddress
+    var equifaxBorrowerName = bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.BorrowerName[0].Name.first + " " + bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.BorrowerName[0].Name.last
+    var equifaxBorrowerAddress = bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.BorrowerAddress[0].CreditAddress
     var tradeLinePartition = bundledata.BundleComponent[6].TrueLinkCreditReportType.TradeLinePartition
     var InquiryPartition = bundledata.BundleComponent[6].TrueLinkCreditReportType.InquiryPartition
     var d = new Date().toLocaleDateString()
@@ -115,6 +115,18 @@ export default function EquifaxDispute() {
         }
     }
 
+    const handleInquiryCheckCount = (e) => {
+        const { checked } = e.target;
+        if (checked === true) {
+
+            setInquiryCount(inquiryCount + 1)
+        } else {
+            setInquiryCount(inquiryCount - 1)
+        }
+
+    }
+
+
     useEffect(() => {
         $(".disputeReason").css("visibility", "hidden");
         $(".disputeReason1").css("visibility", "hidden");
@@ -123,7 +135,6 @@ export default function EquifaxDispute() {
 
     const handleDisputeReason = (e) => {
         const check = document.getElementsByClassName("mycheckbox")
-        const check1 = document.getElementsByClassName("mycheckbox1")
 
         for (let i = 0; i < check.length; i++) {
             if (check[i].checked === true) {
@@ -132,39 +143,50 @@ export default function EquifaxDispute() {
 
             }
         }
+        setShowDispute(true)
 
+    }
+
+    const handleInquiryDisputeReason = () => {
+        const check1 = document.getElementsByClassName("mycheckbox1")
         for (let i = 0; i < check1.length; i++) {
             if (check1[i].checked === true) {
-
                 document.getElementsByClassName("disputeReason1")[i].style.visibility = "visible";
-
             }
         }
-
         setShowDispute(true)
-        setProgress(1)
 
     }
 
 
     const first = useRef(null)
-
-
     useEffect(() => {
-
         first.current = handleClose;
         var letterObject = [];
-
+        var inquiryObject = [];
 
         function handleClose() {
-            const inquiryReason = document.getElementById("inquiryReason")
-            const subscriberName = document.getElementsByClassName("subscriberName")[0];
-            const industryCode = document.getElementsByClassName("industryCode")[0];
-            const individualName = document.getElementsByClassName("individualName")[0];
-            const inquiryDate = document.getElementsByClassName("inquiryDate")[0];
+            var valuedfdf = JSON.parse(sessionStorage.getItem("DisputebtnValue"));
+            var inquiryValue = JSON.parse(sessionStorage.getItem("InquiryDisputebtnValue"));
 
-            console.log(subscriberName, industryCode, individualName, inquiryDate)
+            if (valuedfdf) {
+                document.getElementsByClassName("disputeReason")[valuedfdf].style.visibility = "hidden";
+                document.getElementsByClassName("mycheckbox")[valuedfdf].checked = false
+            }
 
+            if (inquiryValue) {
+                document.getElementsByClassName("disputeReason1")[inquiryValue].style.visibility = "hidden";
+                document.getElementsByClassName("mycheckbox1")[inquiryValue].checked = false
+            }
+
+            const inquiry_custom = document.getElementById("inquiry_custom")
+            const inquiry_suggested_reason = document.getElementById("inquiry_suggested_reason");
+            const modalsubscriberName = document.getElementsByClassName("modalsubscriberName")[0];
+            const modalindustryCode = document.getElementsByClassName("modalindustryCode")[0];
+            const modalinquiryDate = document.getElementsByClassName("modalinquiryDate")[0];
+            var inquiry_reasons = '';
+
+        
             const customReason = document.getElementById("customReason")
             const modalaccountName = document.getElementsByClassName("modalaccountName")[0]
             const modalaccountType = document.getElementsByClassName("modalaccountType")[0]
@@ -175,65 +197,116 @@ export default function EquifaxDispute() {
             var reasons = ''
 
 
-            if (modalaccountName && modalaccountType && modalaccountNumber && modalOpenDate && modalhighbalance) {
 
-                if (customReason) {
-                    reasons = customReason.value
+            if (detailsReasons === undefined && customReason === null) {
+                setDisputeReasonError(true);
+
+            } else {
+                if (modalaccountName && modalaccountType && modalaccountNumber && modalOpenDate && modalhighbalance) {
+                    if (customReason) {
+                        reasons = customReason.value
+                    }
+                    if (detailsReasons) {
+                        reasons = detailsReasons.innerText
+                    }
+                    var NewObject = {
+                        "acName": modalaccountName.innerText,
+                        "actype": modalaccountType.innerText,
+                        "acNumber": modalaccountNumber.innerText,
+                        "openDate": modalOpenDate.innerText,
+                        "balance": modalhighbalance.innerText,
+                        "reasons": reasons
+                    }
                 }
-
-                if (detailsReasons) {
-                    reasons = detailsReasons.innerText
-                }
-
-                var NewObject = {
-                    "acName": modalaccountName.innerText,
-                    "actype": modalaccountType.innerText,
-                    "acNumber": modalaccountNumber.innerText,
-                    "openDate": modalOpenDate.innerText,
-                    "balance": modalhighbalance.innerText,
-                    "reasons": reasons
-                }
-
-            }
-
-            if (inquiryReason) {
-                var inquiryDisputeReason = {
-
-                    "inquiryReason": inquiryReason.value,
-                    "subscriberName":subscriberName.innerText,
-                    "industryCode":industryCode.innerText,
-                    "inquiryDate":inquiryDate.innerText
+                if (NewObject) {
+                    letterObject.push(NewObject)
+                    sessionStorage.setItem("LetterObject", JSON.stringify(letterObject))
+                    setShow(false);
                 }
             }
 
-            if (NewObject) {
-                letterObject.push(NewObject)
-                sessionStorage.setItem("LetterObject", JSON.stringify(letterObject))
-                setShow(false);
+            if (inquiry_suggested_reason || inquiry_custom ) {
+             
+                if (inquiry_custom) {
+                    inquiry_reasons = inquiry_custom.value
+                }
+                if (inquiry_suggested_reason) {
+                    inquiry_reasons = inquiry_suggested_reason.innerText
+                }
+                var NewObject_inquiry = {
+                    "inquiryReason": inquiry_reasons,
+                    "subscriberName": modalsubscriberName.innerText,
+                    "industryCode": modalindustryCode.innerText,
+                    "inquiryDate": modalinquiryDate.innerText
+                }
+
+    
+
+                if (NewObject_inquiry) {
+                    inquiryObject.push(NewObject_inquiry)
+                    sessionStorage.setItem("InquiryObject", JSON.stringify(inquiryObject))
+                    setShowInquire(false);
+
+                }
+
+
+            } else {
+                setDisputeReasonError(true);
             }
-
-            if(inquiryDisputeReason){
-                letterObject.push(inquiryDisputeReason)
-                sessionStorage.setItem("LetterObject", JSON.stringify(letterObject))
-                setShowInquire(false);
-                console.log("bhdfdjf")
-            }
-
-          
-   
-            setFinish(true);
-            setProgress(2)
-
         }
     }, [])
 
 
+    const handleClose1 = () => {
+
+        setShow(false);
+        setShowInquire(false);
+    }
+
+    const handleShow = (e) => {
+        var dispute_btn = e.target;
+        setShow(true)
+        $("#content").show()
+        var button_value = document.getElementsByClassName("disputeReason")
+
+        for (let i = 0; i < button_value.length; i++) {
+            button_value[i].setAttribute("myVal", `${i}`)
+        }
+        setDaysLate(document.getElementsByClassName("DaysLate")[e.target.attributes.myVal.nodeValue].innerText)
+        setHighBalance(document.getElementsByClassName("highBalance")[e.target.attributes.myVal.nodeValue].innerText)
+        setPayStatus(document.getElementsByClassName("PayStatus")[e.target.attributes.myVal.nodeValue].innerText)
+        setPastDue(document.getElementsByClassName("PastDue")[e.target.attributes.myVal.nodeValue].innerText)
+        setRemark(document.getElementsByClassName("Remark")[e.target.attributes.myVal.nodeValue].innerText)
+        setWorstRating(document.getElementsByClassName("worstRating")[e.target.attributes.myVal.nodeValue].innerText)
+        setAccountName(document.getElementsByClassName("accountName")[e.target.attributes.myVal.nodeValue].innerText)
+        setAccountType(document.getElementsByClassName("accountType")[e.target.attributes.myVal.nodeValue].innerText)
+        setOpenDate(document.getElementsByClassName("openDate")[e.target.attributes.myVal.nodeValue].innerText)
+        setAccountNumber(document.getElementsByClassName("accountNumber")[e.target.attributes.myVal.nodeValue].innerText)
+
+        var dispute_btn_value = dispute_btn.getAttribute("myval");
+        if (dispute_btn_value) {
+            sessionStorage.setItem("DisputebtnValue", JSON.stringify(dispute_btn_value))
+        }
+
+    }
 
 
+
+    const handleShowInquire = (e) => {
+        var dispute_btn = e.target;
+        setShowInquire(true)
+        setSubscriberName(document.getElementsByClassName("subscriberName")[e.target.attributes.id.nodeValue].innerText)
+        setIndustryCode(document.getElementsByClassName("industryCode")[e.target.attributes.id.nodeValue].innerText)
+        setIndividualName(document.getElementsByClassName("individualName")[e.target.attributes.id.nodeValue].innerText)
+        setInquiryDate(document.getElementsByClassName("inquiryDate")[e.target.attributes.id.nodeValue].innerText)
+        var dispute_btn_value = dispute_btn.getAttribute("value");
+        if (dispute_btn_value) {
+            sessionStorage.setItem("InquiryDisputebtnValue", JSON.stringify(dispute_btn_value))
+        }
+    }
 
     const showcustom = (e) => {
         const suggestion = e.target.value
-        console.log("suggestion", suggestion);
         switch (suggestion) {
             case 'custom': setCustom(true);
                 setNever(false);
@@ -312,46 +385,17 @@ export default function EquifaxDispute() {
         }
     }
 
-
-    const handleClose1 = () => {
-        setShow(false);
-        setShowInquire(false);
-    }
-
-
-
-    const handleShow = (e) => {
-        setShow(true)
-        var button_value = document.getElementsByClassName("disputeReason")
-        for (let i = 0; i < button_value.length; i++) {
-            button_value[i].setAttribute("myVal", `${i}`)
+    const showInquirycustom = (e) => {
+        const suggestion = e.target.value
+        switch (suggestion) {
+            case 'inquiry_suggested_reason': setInquiry_suggested_reason(true);
+                setInquiry_custom(false);
+                break;
+            case 'inquiry_custom_reason': setInquiry_custom(true);
+                setInquiry_suggested_reason(false);
+                break;
         }
-
-        setDaysLate(document.getElementsByClassName("DaysLate")[e.target.attributes.myVal.nodeValue].innerText)
-        setHighBalance(document.getElementsByClassName("highBalance")[e.target.attributes.myVal.nodeValue].innerText)
-        setPayStatus(document.getElementsByClassName("PayStatus")[e.target.attributes.myVal.nodeValue].innerText)
-        setPastDue(document.getElementsByClassName("PastDue")[e.target.attributes.myVal.nodeValue].innerText)
-        setRemark(document.getElementsByClassName("Remark")[e.target.attributes.myVal.nodeValue].innerText)
-        setWorstRating(document.getElementsByClassName("worstRating")[e.target.attributes.myVal.nodeValue].innerText)
-        setAccountName(document.getElementsByClassName("accountName")[e.target.attributes.myVal.nodeValue].innerText)
-        setAccountType(document.getElementsByClassName("accountType")[e.target.attributes.myVal.nodeValue].innerText)
-        setOpenDate(document.getElementsByClassName("openDate")[e.target.attributes.myVal.nodeValue].innerText)
-        setAccountNumber(document.getElementsByClassName("accountNumber")[e.target.attributes.myVal.nodeValue].innerText)
-
     }
-
-
-    const handleShowInquire = (e) => {
-        setShowInquire(true)
-
-        setSubscriberName(document.getElementsByClassName("subscriberName")[e.target.attributes.id.nodeValue].innerText)
-        setIndustryCode(document.getElementsByClassName("industryCode")[e.target.attributes.id.nodeValue].innerText)
-        setIndividualName(document.getElementsByClassName("individualName")[e.target.attributes.id.nodeValue].innerText)
-        setInquiryDate(document.getElementsByClassName("inquiryDate")[e.target.attributes.id.nodeValue].innerText)
-
-    }
-
-
 
     const sendEmail = () => {
         var mailbody = []
@@ -375,9 +419,9 @@ export default function EquifaxDispute() {
            <div id='userdetails'>
 
               <div id="useraddress">
-                <p id="username">${transunionBorrowerName}</p>
-                <p>${transunionBorrowerAddress.houseNumber + " " + transunionBorrowerAddress.streetName}</p>
-                <p>${transunionBorrowerAddress.city + "," + transunionBorrowerAddress.stateCode + " " + transunionBorrowerAddress.postalCode}</p>
+                <p id="username">${equifaxBorrowerName}</p>
+                <p>${equifaxBorrowerAddress.houseNumber + " " + equifaxBorrowerAddress.streetName}</p>
+                <p>${equifaxBorrowerAddress.city + "," + equifaxBorrowerAddress.stateCode + " " + equifaxBorrowerAddress.postalCode}</p>
                 <p> SSN : ${socialSecurityNumber}</p>
               </div>
 
@@ -415,7 +459,7 @@ export default function EquifaxDispute() {
            </div>
            <div id='letterfooter'>
                <p>Sincerely,</p>
-               <p>${transunionBorrowerName}</p>
+               <p>${equifaxBorrowerName}</p>
            </div>
        </div>`, {
                 callback: function (pdf) {
@@ -427,7 +471,7 @@ export default function EquifaxDispute() {
                     const article = {
                         trackingToken: TrackingToken,
                         equifax_create_date: _disputeDate,
-                        equifax_pdf: demo
+                        account_pdf: demo
                     };
 
                     axios.post(EQUIFAX_DISPUTE_LETTER, article)
@@ -445,9 +489,6 @@ export default function EquifaxDispute() {
                                     theme: "colored"
                                 });
                             }
-                            if (response.data.statusCode === 200) {
-                                Navigate("/equifaxround_1")
-                            }
                         })
                         .catch((err) => {
                             console.log(err)
@@ -456,6 +497,122 @@ export default function EquifaxDispute() {
             })
         }
 
+    }
+
+
+    const sendInquiryEmail = () => {
+        var inquirymailbody = []
+        const InquiryObject = JSON.parse(sessionStorage.getItem("InquiryObject"));
+  
+        if (InquiryObject) {
+            InquiryObject.map((e) => {
+                if (e.inquiryReason) {
+                    var g = `Inquiry of ${e.subscriberName}<span style="visibility:hidden">1</span>(${e.industryCode}) on the date of ${e.inquiryDate}.</br>${e.inquiryReason}`
+                }
+                inquirymailbody.push(g)
+            })
+
+            var doc = new jsPDF("p", "pt", "a4");
+            doc.html(` 
+        <div id="content">
+       <div id='userdetails'>
+           <div id="useraddress">
+               <p id="username">${equifaxBorrowerName}</p>
+               <p>${equifaxBorrowerAddress.houseNumber + " " + equifaxBorrowerAddress.streetName}</p>
+               <p>${equifaxBorrowerAddress.city + "," + equifaxBorrowerAddress.stateCode + " " + equifaxBorrowerAddress.postalCode}</p>
+               <p> SSN : ${socialSecurityNumber}</p>
+           </div>
+           <div>
+               ${fulldate}
+           </div>
+       </div>
+
+       <div id='burus_address'>
+           <p>Equifax Consumer Solutions</p>
+           <p>P.O.Box 2000</p>
+           <p>Chester,PA 19016</p>
+       </div>
+
+       <div id="letterbody">
+           <p>Dear equifax,</p>
+           <p>Re:Letter to Remove Inaccurate Inquiry
+           <p>According to my most recent credit report, your company is currently reporting to the three credit bureaus that I applied for credit with your organization. I did not grant you authorization to review my credit report.</p>
+          ${inquirymailbody.map((e) => {
+                return (
+                    `<div style="text-align:justify">
+                    <p>${e}</p>
+                </div>
+               `
+                )
+            })}
+       <p style="text-align:justify">The presence of this inquiry is adversely affecting my credit report and is impeding my ability to obtain necessary credit. Time is of the essence so I would greatly appreciate a response from you within thirty (30) days.</p>
+
+       <p style="text-align:justify">Please mail me the copy of the signed application or a letter indicating your intention to delete the inquiry</p>
+
+       <p>Thank you for your time and help in this matter.</p>
+
+       </div>
+       <div id='letterfooter'>
+           <p>Sincerely,</p>
+           <p>${equifaxBorrowerName}</p>
+       </div>
+   </div>`, {
+                callback: function (pdf) {
+                    var demo = pdf.output("datauristring");
+                    pdf.save("equifax_inquiry.pdf")
+
+                    var disputedate = new Date().toLocaleDateString()
+                    var _disputeDate = disputedate
+
+                    const article = {
+                        trackingToken: TrackingToken,
+                        equifax_create_date:_disputeDate,
+                        inquiry_pdf:demo,
+                    };
+
+                    axios.post(EQUIFAX_DISPUTE_LETTER, article)
+                        .then((response) => {
+
+                            if (response.data.statusCode === 400) {
+                                toast.error('Dispute letter already sent', {
+                                    position: "top-center",
+                                    autoClose: 5000,
+                                    hideProgressBar: true,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                    theme: "colored"
+                                });
+
+                            }
+                            if (response.data.statusCode === 200) {
+                                // Navigate("/equifaxRound_1")
+                                toast.success('Dispute letter Created successfully', {
+                                    position: "top-center",
+                                    autoClose: 5000,
+                                    hideProgressBar: true,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                    theme: "colored"
+                                });
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                        })
+                }
+            })
+
+
+
+
+
+
+
+        }
     }
 
     return (
@@ -467,46 +624,27 @@ export default function EquifaxDispute() {
             </div>
 
 
-            <div className='mt-5'>
-                <DisputeStepper progress={progress} />
-            </div>
 
             <section className='creditItem' id="creditItem" >
-
                 <Container className='mt-5 disputebox '>
                     <Row>
-                        <Col lg={12}>
+                        <Col lg={12} md={12}>
+                            <p className='disputebox_heading'>account</p>
                             <div className='transUnion_filter'>
-                                {/* <div className='filter_icon'>
-                                    <p className='filter_text'>FILTERS</p>
-                                    <p className=""><FaSlidersH /></p>
-                                </div> */}
-                                <div className='back_selectbtn' >
-                                    <Link to="/creditItem" className=' btn backbtton'>BACK</Link>
-                                    {finish ?
-
-                                        <button className='btn selectbtton' onClick={sendEmail}>FINISH</button>
+                                <div className='back_selectbtn'>
+                                    {count === 0 ?
+                                        <button className=' btn selectbtton'> NO ITEM SELECTED </button>
                                         :
-                                        count === 0
-                                            ?
-                                            <button className=' btn selectbtton'> NO ITEM SELECTED </button>
-                                            :
-                                            <button className=' btn selectbttonnext' onClick={handleDisputeReason} > {count} &nbsp;ITEM SELECTED - NEXT </button>
+                                        <button className=' btn selectbttonnext' onClick={handleDisputeReason} > {count} &nbsp;ITEM SELECTED - NEXT </button>
+
                                     }
+                                    <button className='btn selectbtton' onClick={sendEmail}>FINISH</button>
                                 </div>
                             </div>
 
 
                             <Row>
-                                {/* <Col lg={2} md={3} className="d-flex justify-content-center">
-                                    <div className="nav  verticaLnav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                                        <p className='accountstatus'>Account Status</p>
-                                        <button className="nav-link verticalLink active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#positive" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Positive</button>
-                                        <button className="nav-link verticalLink" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#negative" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Negative</button>
-                                        <button className="nav-link verticalLink" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#all" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">All</button>
-                                    </div>
-                                </Col> */}
-                                 <Col lg={2}  md={2}>
+                                <Col lg={2} md={2}>
                                     <div className="nav  verticaLnav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                                         <p className='accountstatus'>Account Status</p>
                                         <button className="nav-link verticalLink active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#positive" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Positive</button>
@@ -519,12 +657,11 @@ export default function EquifaxDispute() {
                                         {/* ---------------------------------positive----------------------------------------------------- */}
                                         <div className="tab-pane fade show active" id="positive" role="tabpanel" aria-labelledby="v-pills-home-tab">
                                             {/* *************  horizatanl navbar positive ******************* */}
-
-                                            <Col lg={12}>
+                                            <Col lg={12} md={12}>
                                                 <div className="tab-content" id="pills-tabContent">
-                                                    {/* ************************ transunion report ************************ */}
-                                                    <div className="tab-pane fade show active" id="transunion" role="tabpanel" aria-labelledby="pills-home-tab">
-                                                        <Col lg={12}>
+                                                    {/* ************************ equifax report ************************ */}
+                                                    <div className="tab-pane fade show active" id="equifax" role="tabpanel" aria-labelledby="pills-home-tab">
+                                                        <Col lg={12} md={12}>
                                                             <div className="accordian_content mt-3">
                                                                 <Accordion>
                                                                     <Accordion.Item eventKey="0">
@@ -541,17 +678,17 @@ export default function EquifaxDispute() {
                                                                                                     <>
                                                                                                         <Table size="sm" className='maintable' responsive>
                                                                                                             <tr>
-                                                                                                                <td className='credit_checkbox'>
+                                                                                                                <td className='credit_checkbox '>
                                                                                                                     <div className="form-check" >
-                                                                                                                        <input onChange={e => handleCheckCount(e)} className="form-check-input  mycheckbox" type="checkbox" value={index} id="flexCheckChecked" style={{ marginLeft: "0px", marginRight: "10px" }} />
-                                                                                                                        <label className="form-check-label " for="flexC  heckChecked">
+                                                                                                                        <input onChange={e => handleCheckCount(e)} className="form-check-input  mycheckbox" type="checkbox" value={index} id="flexCheckChecked" />
+                                                                                                                        <label className="form-check-label " htmlfor="flexCheckChecked">
                                                                                                                             <span className="accountName">{e.GrantedTrade.AccountType.description}</span>
                                                                                                                             <br></br>
                                                                                                                             <b className="accountType">{e.creditorName}</b>
                                                                                                                         </label>
                                                                                                                     </div>
                                                                                                                 </td>
-                                                                                                                <td>BALANCE
+                                                                                                                <td >BALANCE
                                                                                                                     <br></br>
                                                                                                                     <b>${e.highBalance}</b>
                                                                                                                 </td>
@@ -559,7 +696,6 @@ export default function EquifaxDispute() {
                                                                                                                     <br></br>
                                                                                                                     <b>Positive</b>
                                                                                                                 </td>
-
                                                                                                                 <td className="disputeReason" id={index} onClick={e => handleShow(e)} value={index} name="dispute" style={{ color: "red" }}>Add Dispute Reason </td>
                                                                                                                 <td type="button" className='pulsbutton' data-bs-toggle="collapse" data-bs-target={`#collapse${index}`} aria-expanded="false" aria-controls="collapseExample"><FaPlusSquare style={{ fontSize: "22px", color: "green" }} /></td>
                                                                                                             </tr>
@@ -606,8 +742,8 @@ export default function EquifaxDispute() {
                                                                                                                                 </tbody>
                                                                                                                             </Table>
                                                                                                                         </Col>
-                                                                                                                        <Col lg={6} md={6} >
-                                                                                                                            <Table striped bordered hover size="sm" className='table_content' responsive>
+                                                                                                                        <Col lg={6} md={6}>
+                                                                                                                            <Table striped bordered hover size="sm" className='table_content' responsive >
                                                                                                                                 <tbody>
                                                                                                                                     <tr>
                                                                                                                                         <td>Open Date</td>
@@ -615,7 +751,7 @@ export default function EquifaxDispute() {
                                                                                                                                     </tr>
                                                                                                                                     <tr>
                                                                                                                                         <td>Closed Date</td>
-                                                                                                                                        <td>-</td>
+                                                                                                                                        <td>{e.dateClosed}</td>
                                                                                                                                     </tr>
                                                                                                                                     <tr>
                                                                                                                                         <td>Last Reported</td>
@@ -684,66 +820,6 @@ export default function EquifaxDispute() {
                                                                             </Container>
                                                                         </Accordion.Body>
                                                                     </Accordion.Item>
-
-                                                                    {/************************ ************** INQUIRIES ***************************************************************/}
-                                                                    <Accordion.Item eventKey="2">
-                                                                        <Accordion.Header className='accordinbtn'>INQUIRIES</Accordion.Header>
-                                                                        <Accordion.Body>
-                                                                            <Container>
-                                                                                <Row>
-                                                                                    <Col lg={12} md={12}>
-                                                                                        {equifaxInquiry ?
-                                                                                            equifaxInquiry.map((e,index) => {
-
-                                                                                                return (
-                                                                                                    <Table size="sm" className='maintable ' responsive>
-                                                                                                        <tr>
-                                                                                                            <td className='credit_checkbox'>
-                                                                                                                <div className="form-check">
-                                                                                                                    <input onChange={e => handleCheckCount(e)} className="form-check-input  mycheckbox1" type="checkbox" value={index} id="flexCheckChecked" />
-                                                                                                                    <label className="form-check-label " htmlfor="flexCheckChecked">
-                                                                                                                        Business Name
-                                                                                                                        <br></br>
-                                                                                                                        <b className='subscriberName'>{e.Inquiry.subscriberName}</b>
-                                                                                                                    </label>
-                                                                                                                </div>
-                                                                                                            </td>
-                                                                                                            <td style={{ width: "236px" }}>Business Type
-                                                                                                                <br></br>
-                                                                                                                <b className='industryCode'>{e.Inquiry.IndustryCode.description}</b>
-                                                                                                            </td>
-                                                                                                            <td>Inquiry For
-                                                                                                                <br></br>
-                                                                                                                <span className='individualName'>  {e.Inquiry.inquiryType === "I" ?
-                                                                                                                    <b className='individual'>Individual</b>
-                                                                                                                    :
-                                                                                                                    <b>-</b>
-                                                                                                                }</span>
-
-
-                                                                                                            </td>
-
-
-                                                                                                            <td>DATE
-                                                                                                                <br></br>
-                                                                                                                <b className='inquiryDate'>{e.Inquiry.inquiryDate}</b>
-                                                                                                            </td>
-                                                                                                            <td className="disputeReason1" id={index} onClick={e => handleShowInquire(e)} value={index} name="dispute" style={{ color: "red" }}>Add Dispute Reason </td>
-
-                                                                                                        </tr>
-                                                                                                    </Table>
-                                                                                                )
-                                                                                            })
-                                                                                            :
-                                                                                            <>
-                                                                                                Loading.........................
-                                                                                            </>}
-                                                                                    </Col>
-                                                                                </Row>
-                                                                            </Container>
-
-                                                                        </Accordion.Body>
-                                                                    </Accordion.Item>
                                                                 </Accordion>
                                                             </div>
                                                         </Col>
@@ -753,16 +829,14 @@ export default function EquifaxDispute() {
                                         </div>
 
 
-
-
                                         {/* ---------------------------------negative----------------------------------------------------- */}
 
                                         <div className="tab-pane fade" id="negative" role="tabpanel" aria-labelledby="v-pills-profile-tab">
                                             {/* *************  horizatanl navbar negative ******************* */}
                                             <Col lg={12} md={12}>
                                                 <div className="tab-content" id="pills-tabContent">
-                                                    {/* ************************ transunion report ************************ */}
-                                                    <div className="tab-pane fade show active" id="transunion1" role="tabpanel" aria-labelledby="pills-home-tab">
+                                                    {/* ************************ equifax report ************************ */}
+                                                    <div className="tab-pane fade show active" id="equifax1" role="tabpanel" aria-labelledby="pills-home-tab">
                                                         <Col lg={12} md={12}>
                                                             <div className="accordian_content mt-3">
                                                                 <Accordion>
@@ -782,7 +856,7 @@ export default function EquifaxDispute() {
                                                                                                             <tr>
                                                                                                                 <td className='credit_checkbox'>
                                                                                                                     <div className="form-check">
-                                                                                                                        <input onChange={e => handleCheckCount(e)} className="form-check-input mycheckbox" type="checkbox" value="" id="flexCheckChecked" style={{ marginLeft: "0px", marginRight: "10px" }} />
+                                                                                                                        <input onChange={e => handleCheckCount(e)} className="form-check-input  mycheckbox" type="checkbox" value={index} id="flexCheckChecked" />
                                                                                                                         <label className="form-check-label" for="flexCheckChecked">
                                                                                                                             <span className="accountName">{e.GrantedTrade.AccountType.description}</span>
                                                                                                                             <br></br>
@@ -796,7 +870,7 @@ export default function EquifaxDispute() {
                                                                                                                 </td>
                                                                                                                 <td>ACCOUNT STATUS
                                                                                                                     <br></br>
-                                                                                                                    <b>Negative</b>
+                                                                                                                    <b style={{ color: "red" }}>Negative</b>
                                                                                                                 </td>
 
                                                                                                                 <td className="disputeReason" id={index} onClick={e => handleShow(e)} value={index} name="dispute" style={{ color: "red" }}>Add Dispute Reason </td>
@@ -807,7 +881,7 @@ export default function EquifaxDispute() {
                                                                                                             <div className="card card-body">
                                                                                                                 <Container>
                                                                                                                     <Row>
-                                                                                                                        <Col lg={6} md={6}>
+                                                                                                                        <Col lg={6} md={6}  >
                                                                                                                             <Table striped bordered hover size="sm" className='table_content' responsive>
                                                                                                                                 <tbody>
                                                                                                                                     <tr>
@@ -854,7 +928,7 @@ export default function EquifaxDispute() {
                                                                                                                                     </tr>
                                                                                                                                     <tr>
                                                                                                                                         <td>Closed Date</td>
-                                                                                                                                        <td>-</td>
+                                                                                                                                        <td>{e.dateClosed}</td>
                                                                                                                                     </tr>
                                                                                                                                     <tr>
                                                                                                                                         <td>Last Reported</td>
@@ -862,19 +936,19 @@ export default function EquifaxDispute() {
                                                                                                                                     </tr>
                                                                                                                                     <tr>
                                                                                                                                         <td>Days Late</td>
-                                                                                                                                        <td className='DaysLate'>daylate</td>
+                                                                                                                                        <td className='DaysLate'>30:{e.GrantedTrade.late30Count} | 60:{e.GrantedTrade.late60Count} | 90:{e.GrantedTrade.late90Count}</td>
                                                                                                                                     </tr>
                                                                                                                                     <tr>
                                                                                                                                         <td>Payment Status</td>
-                                                                                                                                        <td className='PayStatus'>-</td>
+                                                                                                                                        <td className='PayStatus'>{e.PayStatus.description}</td>
                                                                                                                                     </tr>
                                                                                                                                     <tr>
                                                                                                                                         <td>Past Due</td>
-                                                                                                                                        <td className='PastDue'>-</td>
+                                                                                                                                        <td className='PastDue'>{e.GrantedTrade.amountPastDue}</td>
                                                                                                                                     </tr>
                                                                                                                                     <tr>
                                                                                                                                         <td>Worst Rating</td>
-                                                                                                                                        <td className='worstRating'>-</td>
+                                                                                                                                        <td className='worstRating'>{e.GrantedTrade.WorstPayStatus.description}</td>
                                                                                                                                     </tr>
                                                                                                                                     <tr>
                                                                                                                                         <td>Remarks</td>
@@ -921,69 +995,6 @@ export default function EquifaxDispute() {
                                                                             </Container>
                                                                         </Accordion.Body>
                                                                     </Accordion.Item>
-
-
-
-
-                                                                    {/************************ ************** INQUIRIES ***************************************************************/}
-                                                                    <Accordion.Item eventKey="2">
-                                                                        <Accordion.Header className='accordinbtn'>INQUIRIES</Accordion.Header>
-                                                                        <Accordion.Body>
-                                                                            <Container>
-                                                                                <Row>
-                                                                                    <Col lg={12} md={12}>
-                                                                                        {equifaxInquiry ?
-                                                                                            equifaxInquiry.map((e,index) => {
-                                                                                                console.log("e", e)
-                                                                                                return (
-                                                                                                    <Table size="sm" className='maintable ' responsive>
-                                                                                                        <tr>
-                                                                                                            <td className='credit_checkbox'>
-                                                                                                                <div className="form-check">
-                                                                                                                    <input onChange={e => handleCheckCount(e)} className="form-check-input  mycheckbox1" type="checkbox" value={index} id="flexCheckChecked" />
-                                                                                                                    <label className="form-check-label " htmlfor="flexCheckChecked">
-                                                                                                                        Business Name
-                                                                                                                        <br></br>
-                                                                                                                        <b className='subscriberName'>{e.Inquiry.subscriberName}</b>
-                                                                                                                    </label>
-                                                                                                                </div>
-                                                                                                            </td>
-                                                                                                            <td style={{ width: "236px" }}>Business Type
-                                                                                                                <br></br>
-                                                                                                                <b className='industryCode'>{e.Inquiry.IndustryCode.description}</b>
-                                                                                                            </td>
-                                                                                                            <td>Inquiry For
-                                                                                                                <br></br>
-                                                                                                                <span className='individualName'>  {e.Inquiry.inquiryType === "I" ?
-                                                                                                                    <b className='individual'>Individual</b>
-                                                                                                                    :
-                                                                                                                    <b>-</b>
-                                                                                                                }</span>
-
-
-                                                                                                            </td>
-
-
-                                                                                                            <td>DATE
-                                                                                                                <br></br>
-                                                                                                                <b className='inquiryDate'>{e.Inquiry.inquiryDate}</b>
-                                                                                                            </td>
-                                                                                                            <td className="disputeReason1" id={index} onClick={e => handleShowInquire(e)} value={index} name="dispute" style={{ color: "red" }}>Add Dispute Reason </td>
-
-                                                                                                        </tr>
-                                                                                                    </Table>
-                                                                                                )
-                                                                                            })
-                                                                                            :
-                                                                                            <>
-                                                                                                Loading.........................
-                                                                                            </>}
-                                                                                    </Col>
-                                                                                </Row>
-                                                                            </Container>
-
-                                                                        </Accordion.Body>
-                                                                    </Accordion.Item>
                                                                 </Accordion>
                                                             </div>
                                                         </Col>
@@ -998,12 +1009,10 @@ export default function EquifaxDispute() {
 
                                         <div className="tab-pane fade" id="all" role="tabpanel" aria-labelledby="v-pills-settings-tab">
                                             {/* *************  horizatanl navbar positive ******************* */}
-
-
                                             <Col lg={12} md={12}>
                                                 <div className="tab-content" id="pills-tabContent">
-                                                    {/* ************************ transunion report ************************ */}
-                                                    <div className="tab-pane fade show active" id="transunion4" role="tabpanel" aria-labelledby="pills-home-tab">
+                                                    {/* ************************ equifax report ************************ */}
+                                                    <div className="tab-pane fade show active" id="equifax4" role="tabpanel" aria-labelledby="pills-home-tab">
                                                         <Col lg={12} md={12}>
                                                             <div className="accordian_content mt-3">
                                                                 <Accordion>
@@ -1015,9 +1024,7 @@ export default function EquifaxDispute() {
                                                                                     <Col lg={12} md={12}>
                                                                                         {equifax ?
                                                                                             equifax.map((e, index) => {
-                                                                                                // console.log("remark", e.Remark.RemarkCode.description);
                                                                                                 var remark = e.Remark
-
                                                                                                 var remark_value = Array.isArray(remark)
                                                                                                 return (
                                                                                                     <>
@@ -1025,7 +1032,7 @@ export default function EquifaxDispute() {
                                                                                                             <tr>
                                                                                                                 <td className='credit_checkbox'>
                                                                                                                     <div className="form-check">
-                                                                                                                        <input onChange={e => handleCheckCount(e)} className="form-check-input mycheckbox" type="checkbox" value="" id="flexCheckChecked" style={{ marginLeft: "0px", marginRight: "10px" }} />
+                                                                                                                        <input onChange={e => handleCheckCount(e)} className="form-check-input  mycheckbox" type="checkbox" value={index} id="flexCheckChecked" />
                                                                                                                         <label className="form-check-label" for="flexCheckChecked">
 
                                                                                                                             <span className="accountName">{e.GrantedTrade.AccountType.description}</span>
@@ -1044,7 +1051,7 @@ export default function EquifaxDispute() {
                                                                                                                     {e.PayStatus.description === "Current" && e.GrantedTrade.WorstPayStatus.description === "Current" ?
                                                                                                                         <b>POSITIVE</b>
                                                                                                                         :
-                                                                                                                        <b>NEGATIVE</b>
+                                                                                                                        <b style={{ color: "red" }}>NEGATIVE</b>
                                                                                                                     }
                                                                                                                 </td>
                                                                                                                 <td onClick={e => handleShow(e)} className="disputeReason" value={index} name="dispute">Add Dispute Reason </td>
@@ -1055,7 +1062,7 @@ export default function EquifaxDispute() {
                                                                                                             <div className="card card-body">
                                                                                                                 <Container>
                                                                                                                     <Row>
-                                                                                                                        <Col lg={6} md={6}>
+                                                                                                                        <Col lg={6} md={6} >
                                                                                                                             <Table striped bordered hover size="sm" className='table_content' responsive>
                                                                                                                                 <tbody>
                                                                                                                                     <tr>
@@ -1076,13 +1083,12 @@ export default function EquifaxDispute() {
                                                                                                                                     </tr>
                                                                                                                                     <tr>
                                                                                                                                         <td>Payment Amount</td>
-                                                                                                                                        {/* <td>{ e.AccountCondition.description}</td> */}
+
 
                                                                                                                                     </tr>
                                                                                                                                     <tr>
                                                                                                                                         <td>Last Payment</td>
-                                                                                                                                        {/* <td>AccountType</td> */}
-                                                                                                                                        {/* <td>{e.GrantedTrade.AccountType.description}</td> */}
+
                                                                                                                                     </tr>
                                                                                                                                     <tr>
                                                                                                                                         <td>Term</td>
@@ -1105,7 +1111,7 @@ export default function EquifaxDispute() {
                                                                                                                                     </tr>
                                                                                                                                     <tr>
                                                                                                                                         <td>Closed Date</td>
-                                                                                                                                        <td>-</td>
+                                                                                                                                        <td>{e.dateClosed}</td>
                                                                                                                                     </tr>
                                                                                                                                     <tr>
                                                                                                                                         <td>Last Reported</td>
@@ -1113,7 +1119,7 @@ export default function EquifaxDispute() {
                                                                                                                                     </tr>
                                                                                                                                     <tr>
                                                                                                                                         <td>Days Late</td>
-                                                                                                                                        <td className='DaysLate'>-</td>
+                                                                                                                                        <td className='DaysLate'>30:{e.GrantedTrade.late30Count} | 60:{e.GrantedTrade.late60Count} | 90:{e.GrantedTrade.late90Count}</td>
                                                                                                                                     </tr>
                                                                                                                                     <tr>
                                                                                                                                         <td>Payment Status</td>
@@ -1173,8 +1179,57 @@ export default function EquifaxDispute() {
                                                                             </Container>
                                                                         </Accordion.Body>
                                                                     </Accordion.Item>
+                                                                </Accordion>
+                                                            </div>
+                                                        </Col>
+                                                    </div>
+                                                </div>
+                                            </Col>
+                                        </div>
+                                    </div>
+                                </Col>
+                            </Row>
+                        </Col>
 
 
+                        <hr className='dispute_divider'></hr>
+
+                        <Col lg={12} md={12}>
+                            <p className='disputebox_heading'>Inquiry</p>
+                            <div className='transUnion_filter'>
+                                <div className='back_selectbtn'>
+                                    {inquiryCount === 0
+                                        ?
+                                        <button className=' btn selectbtton'> NO ITEM SELECTED </button>
+                                        :
+                                        <button className=' btn selectbttonnext' onClick={handleInquiryDisputeReason} > {inquiryCount} &nbsp;ITEM SELECTED - NEXT </button>
+                                    }
+                                    <button className='btn selectbtton' onClick={sendInquiryEmail}>FINISH</button>
+
+                                </div>
+                            </div>
+
+
+                            <Row>
+                                <Col lg={2} md={2}>
+                                    <div className="nav  verticaLnav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                        <p className='accountstatus'>Account Status</p>
+                                        <button className="nav-link verticalLink active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#positive" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">All</button>
+                                    </div>
+                                </Col>
+                                <Col lg={10} md={10}>
+                                    <div className="tab-content" id="v-pills-tabContent">
+                                        {/* ---------------------------------positive----------------------------------------------------- */}
+                                        <div className="tab-pane fade show active" id="positive" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                                            {/* *************  horizatanl navbar positive ******************* */}
+
+                                            <Col lg={12} md={12}>
+                                                <div className="tab-content" id="pills-tabContent">
+                                                    {/* ************************ equifax report ************************ */}
+                                                    <div className="tab-pane fade show active" id="equifax" role="tabpanel" aria-labelledby="pills-home-tab">
+                                                        <Col lg={12} md={12}>
+                                                            <div className="accordian_content mt-3">
+                                                                <Accordion>
                                                                     {/************************ ************** INQUIRIES ***************************************************************/}
                                                                     <Accordion.Item eventKey="2">
                                                                         <Accordion.Header className='accordinbtn'>INQUIRIES</Accordion.Header>
@@ -1183,14 +1238,14 @@ export default function EquifaxDispute() {
                                                                                 <Row>
                                                                                     <Col lg={12} md={12}>
                                                                                         {equifaxInquiry ?
-                                                                                            equifaxInquiry.map((e,index) => {
+                                                                                            equifaxInquiry.map((e, index) => {
 
                                                                                                 return (
                                                                                                     <Table size="sm" className='maintable ' responsive>
                                                                                                         <tr>
                                                                                                             <td className='credit_checkbox'>
                                                                                                                 <div className="form-check">
-                                                                                                                    <input onChange={e => handleCheckCount(e)} className="form-check-input  mycheckbox1" type="checkbox" value={index} id="flexCheckChecked" />
+                                                                                                                    <input onChange={e => handleInquiryCheckCount(e)} className="form-check-input  mycheckbox1" type="checkbox" value={index} id="flexCheckChecked" />
                                                                                                                     <label className="form-check-label " htmlfor="flexCheckChecked">
                                                                                                                         Business Name
                                                                                                                         <br></br>
@@ -1231,10 +1286,8 @@ export default function EquifaxDispute() {
                                                                                     </Col>
                                                                                 </Row>
                                                                             </Container>
-
                                                                         </Accordion.Body>
                                                                     </Accordion.Item>
-
                                                                 </Accordion>
                                                             </div>
                                                         </Col>
@@ -1247,8 +1300,10 @@ export default function EquifaxDispute() {
                             </Row>
                         </Col>
                     </Row>
-                </Container>
-            </section>
+                </Container >
+            </section >
+
+
 
 
             <Modal show={show} onHide={handleClose1}>
@@ -1379,25 +1434,24 @@ export default function EquifaxDispute() {
                     <hr />
                 </div>
                 <Modal.Body>
-
-
                     <section className='disputemodel'>
                         <div>
+
                             <Table className='selectdisputereason_table'>
                                 <tbody>
                                     <tr>
-                                        <td colSpan="2"><span className='modalaccountName'>BUSINESS NAME</span><br /><p style={{ fontSize: "15px" }}><b >{subscriberName}</b></p></td>
+                                        <td colSpan="2"><span>BUSINESS NAME</span><br /><p style={{ fontSize: "15px" }} className='modalsubscriberName'><b >{subscriberName}</b></p></td>
                                     </tr>
                                     <tr>
                                         <td>INQUIRY FOR <br /><b>{individualName}</b></td>
-                                        <td>INQUIRY DATE <br /><b className='modalBalance'>{inquiryDate}</b></td>
+                                        <td>INQUIRY DATE <br /><b className='modalinquiryDate'>{inquiryDate}</b></td>
                                     </tr>
                                     <tr>
-                                        <td colSpan="2">BUSINESS TYPE<br /><b className='modalaccountNumber'>{industryCode}</b></td>
+                                        <td colSpan="2">BUSINESS TYPE<br /><b className='modalindustryCode'>{industryCode}</b></td>
                                     </tr>
+
                                 </tbody>
                             </Table>
-
                         </div>
 
                         <div className='selectdisputreason' >
@@ -1405,17 +1459,30 @@ export default function EquifaxDispute() {
                         </div>
 
                         <div className="reasonSelection">
-                            <Form.Label>Type your reason here:</Form.Label>
-                            <Form.Control
-                                as="textarea"
-                                id="inquiryReason"
-                                rows={3}
-                                className="mb-3 validate"
-                                placeholder="Your Reason"
-                                required
-                            />
-                        </div>
 
+                            <Form.Label>Select Reason:</Form.Label>
+                            <Form.Select aria-label="Default select example" size="sm" onChange={(e) => showInquirycustom(e)}>
+                                <option>Select your reason</option>
+                                <option value="inquiry_suggested_reason">Suggested Reason</option>
+                                <option value="inquiry_custom_reason" >Custom Reason</option>
+                            </Form.Select>
+
+
+                            {inquiry_custom ?
+                                <textarea className="form-control detailsReasons" id="inquiry_custom" placeholder=" Type your custom reason here"></textarea>
+                                : <div></div>
+                            }
+
+
+                            {inquiry_suggested_reason ?
+                                <div className='detailsReasons' id="inquiry_suggested_reason">
+                                    I request that you investigate above inquiry on my credit report to determine who authorized the inquiry. If you find my allegation to be true once your investigation is complete, please remove the inquiry and send me an updated copy of my credit report at the address listed above.<br />
+                                    If you find the inquiry referenced above to be valid, please send me a description of the procedures used in your investigation within 15 business days of completing the investigation.
+                                </div>
+                                :
+                                <div></div>
+                            }
+                        </div>
                     </section>
                 </Modal.Body>
                 <Modal.Footer className='disputereason_footer'>

@@ -27,10 +27,6 @@ export default function Main() {
                 <Route path="/equifaxround_1"element={<EquifaxRound_1/>}></Route>
                 <Route path="/experianRound_1"element={<ExperianRound_1/>}></Route>
                 <Route path="/myaccount"element={<Myaccount/>}></Route>
-
-                
-              
-            
             </Routes>
         </>
     )

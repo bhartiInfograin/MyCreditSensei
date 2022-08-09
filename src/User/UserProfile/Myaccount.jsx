@@ -324,7 +324,7 @@ export default function Myaccount() {
                                 </div>
 
                                 <div className='documents' id='info'>
-                                    <Table className=" table  table-sm table-striped table-hover" responsive>
+                                    {/* <Table className=" table  table-sm table-striped table-hover" responsive>
                                         <tbody>
                                             <tr>
                                                 <td colSpan="3" className='proofofaddress'>PROOF OF ADDRESS</td>
@@ -356,7 +356,7 @@ export default function Myaccount() {
                                                 <td className='text-center viewbtn' onClick={() => deleteDoc("id")}><div className='doucument_btn'>Delete</div></td>
                                             </tr>
                                         </tbody>
-                                    </Table>
+                                    </Table> */}
 
                                     <div className='paymentInfo'>
                                         <Table className="table" striped bordered hover responsive>
