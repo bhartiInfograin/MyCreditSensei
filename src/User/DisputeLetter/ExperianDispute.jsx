@@ -441,13 +441,13 @@ export default function ExperianDispute() {
            </div>
 
            <div id='burus_address'>
-               <p>TransUnioun Consumer Solutions </p>
-               <p>P.O.Box 2000</p>
-               <p>Chester,PA 19016</p>
+           <p>Experian Consumer Solutions</p>
+           <p>P.O.Box 4500</p>
+           <p>Allen,TX 75013</p>
            </div>
 
            <div id="letterbody">
-               <p>Dear Transunion,</p>
+               <p>Dear Experian,</p>
                <p>Re:Letter to Remove Inaccurate Credit Information
                <p>I received a copy of my credit report and found the following item(s) to be in error:</p>
               ${mailbody.map((e) => {
@@ -557,12 +557,12 @@ export default function ExperianDispute() {
 
        <div id='burus_address'>
            <p>Experian Consumer Solutions</p>
-           <p>P.O.Box 2000</p>
-           <p>Chester,PA 19016</p>
+           <p>P.O.Box 4500</p>
+           <p>Allen,TX 75013</p>
        </div>
 
        <div id="letterbody">
-           <p>Dear Transunion,</p>
+           <p>Dear Experian,</p>
            <p>Re:Letter to Remove Inaccurate Inquiry
            <p>According to my most recent credit report, your company is currently reporting to the three credit bureaus that I applied for credit with your organization. I did not grant you authorization to review my credit report.</p>
           ${inquirymailbody.map((e) => {

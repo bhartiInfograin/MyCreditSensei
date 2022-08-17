@@ -186,7 +186,7 @@ export default function EquifaxDispute() {
             const modalinquiryDate = document.getElementsByClassName("modalinquiryDate")[0];
             var inquiry_reasons = '';
 
-        
+
             const customReason = document.getElementById("customReason")
             const modalaccountName = document.getElementsByClassName("modalaccountName")[0]
             const modalaccountType = document.getElementsByClassName("modalaccountType")[0]
@@ -225,8 +225,8 @@ export default function EquifaxDispute() {
                 }
             }
 
-            if (inquiry_suggested_reason || inquiry_custom ) {
-             
+            if (inquiry_suggested_reason || inquiry_custom) {
+
                 if (inquiry_custom) {
                     inquiry_reasons = inquiry_custom.value
                 }
@@ -240,7 +240,7 @@ export default function EquifaxDispute() {
                     "inquiryDate": modalinquiryDate.innerText
                 }
 
-    
+
 
                 if (NewObject_inquiry) {
                     inquiryObject.push(NewObject_inquiry)
@@ -403,10 +403,10 @@ export default function EquifaxDispute() {
 
         if (LetterObject) {
             LetterObject.map((e) => {
-                if(e.inquiryReason){
+                if (e.inquiryReason) {
                     var g = `Inquiry of ${subscriberName}<span style="visibility:hidden">1</span>(${industryCode}) on the date of ${inquiryDate}.</br>${e.inquiryReason}`
                 }
-                if(e.actype){
+                if (e.actype) {
                     var g = `${e.actype}<span style="visibility:hidden">1</span>${e.acName} with account ${e.acNumber} opended on ${e.openDate} and a balance of ${e.balance} .</br>${e.reasons}`
                 }
                 mailbody.push(g)
@@ -431,9 +431,9 @@ export default function EquifaxDispute() {
            </div>
 
            <div id='burus_address'>
-               <p>Equifax Consumer Solutions </p>
-               <p>P.O.Box 2000</p>
-               <p>Chester,PA 19016</p>
+           <p>Equifax Consumer Solutions</p>
+           <p>P.O.Box 740256</p>
+           <p>Atlanta,GA 30374-0256</p>
            </div>
 
 
@@ -503,7 +503,7 @@ export default function EquifaxDispute() {
     const sendInquiryEmail = () => {
         var inquirymailbody = []
         const InquiryObject = JSON.parse(sessionStorage.getItem("InquiryObject"));
-  
+
         if (InquiryObject) {
             InquiryObject.map((e) => {
                 if (e.inquiryReason) {
@@ -529,12 +529,12 @@ export default function EquifaxDispute() {
 
        <div id='burus_address'>
            <p>Equifax Consumer Solutions</p>
-           <p>P.O.Box 2000</p>
-           <p>Chester,PA 19016</p>
+           <p>P.O.Box 740256</p>
+           <p>Atlanta,GA 30374-0256</p>
        </div>
 
        <div id="letterbody">
-           <p>Dear equifax,</p>
+           <p>Dear Equifax,</p>
            <p>Re:Letter to Remove Inaccurate Inquiry
            <p>According to my most recent credit report, your company is currently reporting to the three credit bureaus that I applied for credit with your organization. I did not grant you authorization to review my credit report.</p>
           ${inquirymailbody.map((e) => {
@@ -566,8 +566,8 @@ export default function EquifaxDispute() {
 
                     const article = {
                         trackingToken: TrackingToken,
-                        equifax_create_date:_disputeDate,
-                        inquiry_pdf:demo,
+                        equifax_create_date: _disputeDate,
+                        inquiry_pdf: demo,
                     };
 
                     axios.post(EQUIFAX_DISPUTE_LETTER, article)

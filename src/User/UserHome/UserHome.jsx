@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Redirect } from 'react-router-dom';
 import UserHeader from '../Common/UserHeader';
 import { Container, Row, Col, Table, Modal } from 'react-bootstrap';
 import { FaArrowRight } from 'react-icons/fa';
@@ -7,9 +7,10 @@ import Graph from './Graph';
 import { Link } from 'react-router-dom';
 import { FaCheckCircle } from 'react-icons/fa';
 import axios from 'axios';
-import { CREDIT_SCORE, GET_DOC } from '../../Url';
+import { CREDIT_SCORE, GET_DOC, SUBSCRIPTION_LIST, CHECKOUT, DELETE_SUBSCRIPTION } from '../../Url';
 import UserFooter from '../Common/UserFooter';
 import { ToastContainer, toast } from 'react-toastify';
+import { resolveObjectURL } from 'buffer';
 
 export default function UserHome() {
   const summary = JSON.parse(sessionStorage.getItem("SUMMARY"));
@@ -22,6 +23,8 @@ export default function UserHome() {
   let Navigate = useNavigate()
   //  =====plan purchase popup start=======
   const [show, setShow] = useState();
+
+
   //  =====plan purchase popup end=======
   //==================== user details===========================
   const bundledata = JSON.parse(sessionStorage.getItem("BUNDLEDATA"));
@@ -34,31 +37,55 @@ export default function UserHome() {
   const state = bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.BorrowerAddress[0].CreditAddress.stateCode;
   const zip = bundledata.BundleComponent[6].TrueLinkCreditReportType.Borrower.BorrowerAddress[0].CreditAddress.postalCode;
   //==================== user details end===========================
+  var seconds =  Math.floor(Date.now() / 1000); 
 
-  //====================== check subcription======================
-  useEffect(() => {
-    axios.get(`https://www.mycreditsensei.com:5000/getDueDate?trackingToken=${trackingToken}`)
-      .then((response) => {
-        if (response.data.statusMsg === "Invalid tracking token") {
-          Navigate('/login')
+
+  useEffect(async () => {
+    const article = { "trackingToken": trackingToken }
+    const { data } = await axios.post(SUBSCRIPTION_LIST, article)
+
+    if (data) {
+      if (data.statusMsg.data.length > 0) {
+        var endDate = data.statusMsg.data[0].current_period_end;
+        if (endDate < seconds) {
+          const payload = { "subscriptionId": data.statusMsg.data[0].id }
+          const { res } = await axios.post(DELETE_SUBSCRIPTION, payload)
         }
-        if (response.data.statusCode === 200) {
-          const _dueDate = response.data.statusMsg.endDate
-          var duedate = new Date(_dueDate * 1000);
-          var currendate = new Date();
-          if (duedate >= currendate) {
-            setShow(false)
-          } else {
-            setShow(true)
-          }
-        } else {
-          setShow(true)
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }, [])
+        setShow(false)
+
+      } else {
+        setShow(true)
+      }
+    }
+  },[])
+
+
+
+
+
+  // useEffect(() => {
+  //   axios.get(`https://www.mycreditsensei.com:5000/getDueDate?trackingToken=${trackingToken}`)
+  //     .then((response) => {
+  //       if (response.data.statusMsg === "Invalid tracking token") {
+  //         Navigate('/login')
+  //       }
+  //       if (response.data.statusCode === 200) {
+  //         const _dueDate = response.data.statusMsg.endDate
+  //         var duedate = new Date(_dueDate * 1000);
+  //         var currendate = new Date();
+  //         if (duedate >= currendate) {
+  //           setShow(false)
+  //         } else {
+  //           setShow(true)
+  //         }
+  //       } else {
+  //         setShow(true)
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log(err)
+  //     })
+  // }, [])
   //====================== check subcription end======================
   //******************* */ get add on address date  *********************************
   useEffect(() => {
@@ -100,89 +127,93 @@ export default function UserHome() {
 
 
   //====================save score in database =======================
-  useEffect(async() => {
+  useEffect(async () => {
     const article = {
       "trackingToken": trackingToken,
       "transunion_credit_score": trans,
       "experian_credit_score": expri,
       "equifax_credit_score": equ
     }
-    const {data} = await axios.post(CREDIT_SCORE, article)
+    const { data } = await axios.post(CREDIT_SCORE, article)
   })
   //====================save score in database =============================
   //=================== to get subscription (payment getway)================
+  // const handleSubscription = async () => {
+  //   const data = await axios.post("https://www.mycreditsensei.com:5000/subcription")
+
+  //     .then((res) => {
+  //       if (res.data.data.id) {
+  //         var options = {
+  //           key: "rzp_test_FRwpmu0LJEnAkl",
+  //           "subscription_id": res.data.data.id,
+  //           "description": "Monthly My credit sensei  Plan",
+  //           "handler": async (response) => {
+  //             setShow(false)
+  //             const article = {
+  //               "razorpay_subscription_id": response.razorpay_subscription_id,
+  //               "razorpay_payment_id": response.razorpay_payment_id,
+  //               "razorpay_signature": response.razorpay_signature,
+  //               "trackingToken": trackingToken,
+  //               "endDate": res.data.data.end_at,
+  //               "startDate": res.data.data.created_at
+  //             }
+  //             try {
+  //               const verifyUrl = "https://www.mycreditsensei.com:5000/verify";
+  //               const { data } = await axios.post(verifyUrl, article);
+  //               if (data.statusCode === 200) {
+  //                 toast.success("Payment successfully Done ", {
+  //                   position: "top-center",
+  //                   autoClose: 5000, 
+  //                   hideProgressBar: true,
+  //                   closeOnClick: true,
+  //                   pauseOnHover: true,
+  //                   draggable: true,
+  //                   progress: undefined,
+  //                   theme: "colored"
+  //               });
+  //               }
+
+  //             } catch (error) {
+  //               console.log("error", error)
+  //             }
+  //           },
+  //           "theme": {
+  //             "color": "#145214"
+  //           }
+  //         };
+  //         var paymentObject = new window.Razorpay(options);
+  //         paymentObject.on('payment.failed', function (response) {
+
+  //           toast.error("Payment failed ", {
+  //             position: "top-center",
+  //             autoClose: 5000,
+  //             hideProgressBar: true,
+  //             closeOnClick: true,
+  //             pauseOnHover: true,
+  //             draggable: true,
+  //             progress: undefined,
+  //             theme: "colored"
+  //         });
+  //           setShow(false)
+  //         });
+  //         paymentObject.open()
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log("error", error)
+  //     })
+  // }
+
+
   const handleSubscription = async () => {
-    const data = await axios.post("https://www.mycreditsensei.com:5000/subcription")
-   
-      .then((res) => {
-        if (res.data.data.id) {
-          var options = {
-            key: "rzp_test_FRwpmu0LJEnAkl",
-            "subscription_id": res.data.data.id,
-            "description": "Monthly My credit sensei  Plan",
-            "handler": async (response) => {
-              setShow(false)
-              const article = {
-                "razorpay_subscription_id": response.razorpay_subscription_id,
-                "razorpay_payment_id": response.razorpay_payment_id,
-                "razorpay_signature": response.razorpay_signature,
-                "trackingToken": trackingToken,
-                "endDate": res.data.data.end_at,
-                "startDate": res.data.data.created_at
-              }
-              try {
-                const verifyUrl = "https://www.mycreditsensei.com:5000/verify";
-                const { data } = await axios.post(verifyUrl, article);
-                if (data.statusCode === 200) {
-                  toast.success("Payment successfully Done ", {
-                    position: "top-center",
-                    autoClose: 5000, 
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored"
-                });
-                }
-
-              } catch (error) {
-                console.log("error", error)
-              }
-            },
-            "theme": {
-              "color": "#145214"
-            }
-          };
-          var paymentObject = new window.Razorpay(options);
-          paymentObject.on('payment.failed', function (response) {
-
-            toast.error("Payment failed ", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: true,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "colored"
-          });
-
-            // alert(response.error.code);
-            // alert(response.error.description);
-            // alert(response.error.source);
-            // alert(response.error.step);
-            // alert(response.error.reason);
-            // alert(response.error.metadata.order_id);
-            // alert(response.error.metadata.payment_id);
-            setShow(false)
-          });
-          paymentObject.open()
-        }
-      })
-      .catch((error) => {
-        console.log("error", error)
-      })
+    const article = {
+      "trackingToken": trackingToken
+    }
+    const { data } = await axios.post(CHECKOUT, article)
+    console.log("checkout", data)
+    if (data.url) {
+      window.location.href = data.url
+    }
   }
   //=================== to get subscription (payment getway) end================
 
@@ -400,16 +431,16 @@ export default function UserHome() {
 
 
       <ToastContainer
-                position="top-center"
-                autoClose={5000}
-                hideProgressBar
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </>
   )
 }

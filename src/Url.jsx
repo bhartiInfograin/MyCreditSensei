@@ -51,3 +51,9 @@ export const CREDIT_SCORE = "https://www.mycreditsensei.com:5000/credit_score";
 
 
 export const CONTACTUS = "https://www.mycreditsensei.com:5000/contactus";
+
+
+
+export const  SUBSCRIPTION_LIST = "https://www.mycreditsensei.com:5000/subscriptions_list";
+export const  CHECKOUT = "https://www.mycreditsensei.com:5000/checkout";
+export const  DELETE_SUBSCRIPTION = "https://www.mycreditsensei.com:5000/del_subscriptions";

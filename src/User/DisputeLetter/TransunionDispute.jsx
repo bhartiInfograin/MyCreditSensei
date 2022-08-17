@@ -448,7 +448,7 @@ export default function SelectDisputeAC() {
            <div id='burus_address'>
                <p>TransUnioun Consumer Solutions </p>
                <p>P.O.Box 2000</p>
-               <p>Chester,PA 19016</p>
+               <p>Chester,PA 19016-2000</p>
            </div>
 
            <div id="letterbody">
@@ -557,9 +557,9 @@ export default function SelectDisputeAC() {
        </div>
 
        <div id='burus_address'>
-           <p>TransUnioun Consumer Solutions </p>
-           <p>P.O.Box 2000</p>
-           <p>Chester,PA 19016</p>
+       <p>TransUnioun Consumer Solutions </p>
+       <p>P.O.Box 2000</p>
+       <p>Chester,PA 19016-2000</p>
        </div>
 
        <div id="letterbody">
